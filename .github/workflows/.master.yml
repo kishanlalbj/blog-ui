@@ -27,3 +27,9 @@ jobs:
           node-version: '12.x'
       - run: npm ci
       - run: npm run build
+
+    - name: Release
+      uses: actions/setup-node@v1
+      with:
+        node_version: '12.x'
+    - run: npx semantic-release
