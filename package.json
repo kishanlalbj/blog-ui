@@ -1,0 +1,39 @@
+{
+  "name": "new-blog",
+  "version": "1.0.0",
+  "description": "Personal Blog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/*.js",
+    "lint:fix": "eslint src/*.js --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kishanlalbj/new-blog.git"
+  },
+  "keywords": [
+    "blog"
+  ],
+  "author": "Kishanlal B J",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kishanlalbj/new-blog/issues"
+  },
+  "homepage": "https://github.com/kishanlalbj/new-blog#readme",
+  "devDependencies": {
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  }
+}
