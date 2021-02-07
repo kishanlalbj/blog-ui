@@ -4,7 +4,7 @@ import dog from './assets/img/dog.png';
 import Helmet from './components/Helmet/Helmet';
 
 const App = () => {
-  const [name] = useState('Tony');
+  const [name] = useState('MAx');
   return (
     <div>
       <Helmet />
