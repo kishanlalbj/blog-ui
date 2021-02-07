@@ -1,6 +1,6 @@
 {
   "name": "new-blog",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Personal Blog",
   "main": "index.js",
   "scripts": {
@@ -8,11 +8,12 @@
     "lint": "eslint src/*.js",
     "lint:fix": "eslint src/*.js --fix",
     "start": "webpack serve --open",
-    "build": "webpack"
+    "build": "webpack",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kishanlalbj/new-blog.git"
+    "url": "https://github.com/kishanlalbj/new-blog.git"
   },
   "keywords": [
     "blog"
@@ -46,6 +47,7 @@
     "sass": "^1.32.6",
     "sass-loader": "^11.0.0",
     "semantic-release": "^17.3.7",
+    "semantic-release-cli": "^5.4.3",
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.21.1",
@@ -56,6 +58,11 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
   },
   "lint-staged": {
     "*.js": [
