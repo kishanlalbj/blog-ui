@@ -16,11 +16,11 @@ jobs:
       # Checks out a copy of your repository on the ubuntu-latest machine
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       # Build React App  
       - name: Build code
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-        - run: npm ci
-        - run: npm run build
+      - run: npm ci
+      - run: npm run build
