@@ -15,6 +15,7 @@ module.exports = {
   rules: {
     quotes: ['error', 'single'],
     'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx'] }],
-    'no-multiple-empty-lines': ['error', { 'max': 2, 'maxEOF': 0 }]
+    'no-multiple-empty-lines': ['error', { 'max': 2, 'maxEOF': 0 }],
+    'jsx-quotes': ['error', 'prefer-single']
   },
 };

@@ -1,16 +1,22 @@
-import React, { useState} from 'react'
-import cat from './assets/img/cat.png'
+import React, { useState } from 'react';
+import './App.scss';
+import dog from './assets/img/dog.png';
+import Helmet from './components/Helmet/Helmet';
 
-const App = () =>  {
-    
-    const [name] = useState('Kishan')
-    return (
-    
+const App = () => {
+  const [name] = useState('Tony');
+  return (
+    <div>
+      <Helmet />
+
+      <div className='container'>
         <div>
-            <h3>Test {name}</h3>
-            <img src={cat} alt='cat' />
+          <img src={dog} alt='cat' width='100%' />
+          <center>{name}</center>
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default App
+export default App;
