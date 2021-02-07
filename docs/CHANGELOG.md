@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/kishanlalbj/new-blog/compare/v1.2.0...v1.2.1) (2021-02-07)
+
+
+### Bug Fixes
+
+* ignore eslint for other non project files ([ed92a1c](https://github.com/kishanlalbj/new-blog/commit/ed92a1c7d54955203d7051214899eeb4627f4ec6))
+
 # [1.2.0](https://github.com/kishanlalbj/new-blog/compare/v1.1.1...v1.2.0) (2021-02-07)
 
 
