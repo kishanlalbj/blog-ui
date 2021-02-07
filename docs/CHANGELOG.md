@@ -1,3 +1,11 @@
+## [4.0.1](https://github.com/kishanlalbj/new-blog/compare/v4.0.0...v4.0.1) (2021-02-07)
+
+
+### Bug Fixes
+
+* test ([2c61757](https://github.com/kishanlalbj/new-blog/commit/2c6175704006069ebbc50abbf42b1b1e684064ad))
+* test ([d1b2fee](https://github.com/kishanlalbj/new-blog/commit/d1b2fee7446fcfd8d9e0e9e018a9cd213eba939d))
+
 ## [1.2.1](https://github.com/kishanlalbj/new-blog/compare/v1.2.0...v1.2.1) (2021-02-07)
 
 
