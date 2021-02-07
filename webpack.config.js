@@ -7,7 +7,8 @@ module.exports = {
     entry: path.resolve(__dirname, 'src', 'index.js'),
     devServer: {
         inline: true,
-        port: 3000
+        port: 3000,
+        hot: true
     },
     output: {
         filename: '[name].bundle.js',
@@ -34,6 +35,10 @@ module.exports = {
                         ]
                     }
                 }]
+            },
+            {
+                test: /\.scss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader'],   
             }
         ]
     }
