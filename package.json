@@ -40,12 +40,6 @@
       "pre-commit": "npm test"
     }
   },
-  "lint-staged": {
-    "*.js": [
-      "npm test",
-      "git add"
-    ]
-  },
   "release": {
     "branches": [
       "main"
