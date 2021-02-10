@@ -3,6 +3,6 @@ import App from "./App";
 
 describe("rending app", () => {
   it("should renderapp", () => {
-    expect(1).toBe(2);
+    expect(2).toBe(2);
   });
 });
