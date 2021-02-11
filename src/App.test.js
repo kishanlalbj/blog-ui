@@ -7,4 +7,9 @@ describe("rending app", () => {
     const wrapper = shallow(<App />);
     expect(wrapper.length).toBe(1);
   });
+
+  it("should throw error", () => {
+    const wrapper = shallow(<p />);
+    expect(wrapper.length).toBe(1);
+  });
 });
