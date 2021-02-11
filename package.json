@@ -26,7 +26,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && npm run test:nowatch"
+      "pre-commit": "lint-staged && npm run test:nowatch",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
@@ -53,6 +54,9 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "commitizen": "^4.2.3",
     "cross-env": "^7.0.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
