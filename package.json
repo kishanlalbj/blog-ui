@@ -16,7 +16,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:nowatch": "cross-env CI=true react-scripts test",
-    "coverage": "cross-env CI=true react-scripts test --coverage",
+    "coverage": "cross-env CI=true react-scripts test -env=jsdom --coverage --reporters=default",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
