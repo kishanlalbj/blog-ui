@@ -27,7 +27,7 @@ jobs:
           node-version: "12.x"
       - run: npm ci
       - run: npm run build
-      - run: npm run test --coverage
+      - run: npm run coverage
 
       # Code Scan
       - name: SonarCloud Scan
