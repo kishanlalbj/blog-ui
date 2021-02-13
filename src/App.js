@@ -1,22 +1,15 @@
-import React, { useState } from 'react';
-import './App.scss';
-import dog from './assets/img/dog.png';
-import Helmet from './components/Helmet/Helmet';
+import { useState } from "react";
+import "./App.css";
 
-const App = () => {
-  const [name] = useState('MAx');
+function App() {
+  const [count, setCount] = useState(0);
   return (
-    <div>
-      <Helmet />
-
-      <div className='container'>
-        <div>
-          <img src={dog} alt='cat' width='100%' />
-          <center>{name}</center>
-        </div>
-      </div>
+    <div className="App">
+      <h4>React JS</h4>
+      <p>{count}</p>
+      <button onClick={() => setCount(count + 1)}>click me</button>
     </div>
   );
-};
+}
 
 export default App;
