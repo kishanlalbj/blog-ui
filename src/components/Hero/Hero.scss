@@ -1,0 +1,46 @@
+@import '../../variables.scss';
+
+.custom-shape-divider-bottom-1613237233 {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1613237233 svg {
+  position: relative;
+  display: block;
+  width: calc(130% + 1.3px);
+  height: 160px;
+  transform: rotateY(180deg);
+}
+
+.custom-shape-divider-bottom-1613237233 .shape-fill {
+  fill: #ffffff;
+}
+
+.hero-container {
+  position: relative;
+  background: $heroImage;
+  min-height: 80vh;
+  color: #ffffff;
+}
+
+.logo-box {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hero-image {
+  position: absolute;
+  top: 20%;
+  left: 60%;
+  img {
+    width: 180%;
+  }
+}
