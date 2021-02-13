@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Nav, NavDropdown, Dropdown, Container } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
 import './Header.scss';
 
 const Header = () => {
@@ -7,7 +7,6 @@ const Header = () => {
     <nav data-test='main-header'>
       <Navbar collapseOnSelect expand='lg' bg='dark' variant='dark'>
         <Container>
-          {' '}
           <Navbar.Brand href='#home'>Scribbles</Navbar.Brand>
           <Navbar.Toggle aria-controls='responsive-navbar-nav' />
           <Navbar.Collapse
