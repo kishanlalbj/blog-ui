@@ -13,7 +13,8 @@ import './Landing.scss';
 const Landing = () => {
   const [articles] = useState([
     {
-      title: 'New Post',
+      title: 'The Reality',
+      subtitle: 'The boy who faced reality for first time',
       tag: 'Life',
       createdOn: Date.now(),
       content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
@@ -22,7 +23,8 @@ const Landing = () => {
                 It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`
     },
     {
-      title: 'Another Post',
+      title: 'World is One',
+      subtitle: 'Citizens of the world',
       tag: 'Travel',
       createdOn: Date.now(),
       content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
@@ -31,7 +33,8 @@ const Landing = () => {
                 It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`
     },
     {
-      title: 'One more post',
+      title: 'Crushed Zoom',
+      subtitle: 'New age fashion',
       tag: 'Fashion',
       createdOn: Date.now(),
       content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
@@ -40,7 +43,8 @@ const Landing = () => {
                 It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`
     },
     {
-      title: 'Comedy',
+      title: '96',
+      subtitle: 'Comeback lets see',
       tag: 'Romance',
       createdOn: Date.now(),
       content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 

@@ -26,4 +26,10 @@ describe('Article', () => {
     );
     expect(articleComponentTitle).toBeUndefined();
   });
+
+  it('should render read more button', () => {
+    const wrapper = setUp(initialProps);
+    const articleComponentBtn = findTestByAttr(wrapper, 'readmore-btn');
+    expect(articleComponentBtn.length).toBe(1);
+  });
 });
