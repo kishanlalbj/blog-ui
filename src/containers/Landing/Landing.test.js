@@ -22,18 +22,46 @@ const setUp = (initialState = {}) => {
 };
 
 describe('Landing page component', () => {
-  let wrapper;
-  beforeEach(() => {
-    wrapper = setUp(initialState);
-  });
+  // let wrapper;
+  // beforeEach(() => {
+  //   wrapper = setUp(initialState);
+  // });
 
   it('render without error', () => {
+    const wrapper = setUp(initialState);
     const landingComponent = findTestByAttr(wrapper, 'landing');
     expect(landingComponent.length).toBe(1);
   });
 
   it('should have hero component', () => {
+    const wrapper = setUp(initialState);
     const heroComponent = findTestByAttr(wrapper, 'hero-landing');
     expect(heroComponent.length).toBe(1);
+  });
+
+  it('should render the left arrow button', () => {
+    const wrapper = setUp({
+      articles: {
+        previous: {
+          page: 2
+        }
+      }
+    });
+
+    const leftButtonComponent = findTestByAttr(wrapper, 'left-btn');
+    expect(leftButtonComponent.length).toBe(1);
+  });
+
+  it('should render right arrow button', () => {
+    const wrapper = setUp({
+      articles: {
+        next: {
+          page: 3
+        }
+      }
+    });
+
+    const rightComponent = findTestByAttr(wrapper, 'right-btn');
+    expect(rightComponent.length).toBe(1);
   });
 });

@@ -15,7 +15,10 @@ const Footer = () => {
         <p>v1.3.0</p>
         <p>Handcrafted by @kishanlalbj</p>
       </div>
-      <div className='custom-shape-divider-top-1613247970'>
+      <div
+        data-test='footer-svg'
+        className='custom-shape-divider-top-1613247970'
+      >
         <svg
           data-name='Layer 1'
           xmlns='https://www.w3.org/2000/svg'

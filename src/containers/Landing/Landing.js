@@ -58,6 +58,7 @@ const Landing = (props) => {
         <div className='pagination-buttons'>
           {previous !== undefined ? (
             <FontAwesomeIcon
+              data-test='left-btn'
               className='btn-icon'
               onClick={previousPage}
               color={'#a11692'}
@@ -70,6 +71,7 @@ const Landing = (props) => {
 
           {next !== undefined ? (
             <FontAwesomeIcon
+              data-test='right-btn'
               className='btn-icon'
               onClick={nextPage}
               color={'#a11692'}
