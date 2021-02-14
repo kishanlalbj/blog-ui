@@ -27,20 +27,20 @@ const Landing = (props) => {
 
   const nextPage = () => {
     const page = props.next.page;
-    console.log('Next', page);
+    // console.log('Next', page);
     props.fetchAllArticles(page);
   };
 
   const previousPage = () => {
     const page = props.previous.page;
-    console.log('Previous', page);
+    // console.log('Previous', page);
 
     props.fetchAllArticles(page);
   };
 
   return (
     <div data-test='landing'>
-      <Hero></Hero>
+      <Hero data-test='hero-landing'></Hero>
       <Container>
         <Row
           style={{ height: '100%', minHeight: '100vh', position: 'relative' }}
@@ -49,7 +49,7 @@ const Landing = (props) => {
             <ArticleList articles={articles}></ArticleList>
           ) : (
             <Col md={12} sm={12}>
-              <div className='spinner'>
+              <div className='spinner' data-test='spinner'>
                 <FontAwesomeIcon icon={faSpinner} size='4x'></FontAwesomeIcon>
               </div>
             </Col>
@@ -85,9 +85,9 @@ const Landing = (props) => {
   );
 };
 
-Hero.propTypes = {
-  articles: PropTypes.array.isRequired
-};
+// Hero.propTypes = {
+//   articles: PropTypes.array.isRequired
+// };
 
 const mapStateToProps = (state) => ({
   articles: state.articles.allArticles,

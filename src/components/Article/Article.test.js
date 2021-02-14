@@ -7,7 +7,8 @@ const setUp = (props = {}) => shallow(<Article {...props}></Article>);
 
 const initialProps = {
   title: 'tes',
-  createdOn: Date.now(),
+  subtitle: 'test',
+  createdOn: 'adasd',
   content: 'lorem ipsum',
   tag: 'Life'
 };
@@ -20,7 +21,7 @@ describe('Article', () => {
   });
 
   it('should throw error if props is not passed', () => {
-    const wrapper = setUp();
+    const wrapper = setUp(initialProps);
     const articleComponentTitle = findTestByAttr(wrapper, 'article').prop(
       'content'
     );
