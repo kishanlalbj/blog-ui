@@ -3,9 +3,7 @@ import Landing from './containers/Landing/Landing';
 
 function App() {
   return (
-    <div data-test='app' className='App'>
-      {/* <Header></Header> */}
-
+    <div data-test='app'>
       <Landing></Landing>
 
       <Footer></Footer>

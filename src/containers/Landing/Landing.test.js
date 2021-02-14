@@ -1,9 +1,16 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import Landing from './Landing';
-import { findTestByAttr } from '../../../utils';
+import { findTestByAttr, storeFactory } from '../../../utils';
 
-const setUp = (props = {}) => shallow(<Landing {...props}></Landing>);
+const setUp = (initialState = {}) => {
+  const store = storeFactory(initialState);
+  const wrapper = shallow(<Landing store={store}></Landing>)
+    .dive()
+    .dive();
+
+  return wrapper;
+};
 
 describe('Landing page component', () => {
   let wrapper;

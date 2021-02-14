@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import './Article.scss';
 
 const Article = (props) => {
   return (
@@ -20,7 +21,15 @@ const Article = (props) => {
             <p>{props.subtitle}</p>
             <p className='chip'>{props.tag}</p>
           </Card.Subtitle>
-          <Card.Text>{props.content?.substr(0, 140)}...</Card.Text>
+          <Card.Text className='text-size'>
+            <span
+              dangerouslySetInnerHTML={{
+                __html: props.content?.substr(0, 170) + '...'
+              }}
+            ></span>
+            <br></br>
+            {/* {props.content?.substr(0, 140)}... */}
+          </Card.Text>
           <Card.Text className='mb-2 text-muted'>
             <p>Posted on {new Date(props.createdOn).toLocaleDateString()}</p>
           </Card.Text>

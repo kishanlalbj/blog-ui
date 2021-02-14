@@ -1,83 +1,103 @@
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { Container, Row, Col } from 'react-bootstrap';
 import {
   faArrowAltCircleRight,
-  faArrowAltCircleLeft
+  faArrowAltCircleLeft,
+  faSpinner
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
-import { Container, Row } from 'react-bootstrap';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ArticleList from '../../components/ArticlesList/ArticleList';
 import Hero from '../../components/Hero/Hero';
 import './Landing.scss';
+import { fetchArticles } from '../../actions/articles';
 
-const Landing = () => {
-  const [articles] = useState([
-    {
-      title: 'The Reality',
-      subtitle: 'The boy who faced reality for first time',
-      tag: 'Life',
-      createdOn: Date.now(),
-      content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. 
-                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`
-    },
-    {
-      title: 'World is One',
-      subtitle: 'Citizens of the world',
-      tag: 'Travel',
-      createdOn: Date.now(),
-      content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. 
-                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`
-    },
-    {
-      title: 'Crushed Zoom',
-      subtitle: 'New age fashion',
-      tag: 'Fashion',
-      createdOn: Date.now(),
-      content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. 
-                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`
-    },
-    {
-      title: '96',
-      subtitle: 'Comeback lets see',
-      tag: 'Romance',
-      createdOn: Date.now(),
-      content: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum`
-    }
-  ]);
+const Landing = (props) => {
+  const { articles, loading, next, previous } = props;
+
+  useEffect(() => {
+    const fetchArticles = () => {
+      const { fetchAllArticles } = props;
+      fetchAllArticles();
+    };
+    fetchArticles();
+  }, []);
+
+  const nextPage = () => {
+    const page = props.next.page;
+    console.log('Next', page);
+    props.fetchAllArticles(page);
+  };
+
+  const previousPage = () => {
+    const page = props.previous.page;
+    console.log('Previous', page);
+
+    props.fetchAllArticles(page);
+  };
+
   return (
     <div data-test='landing'>
       <Hero></Hero>
       <Container>
-        <Row style={{ height: '100%' }}>
-          <ArticleList articles={articles}></ArticleList>
+        <Row
+          style={{ height: '100%', minHeight: '100vh', position: 'relative' }}
+        >
+          {!loading ? (
+            <ArticleList articles={articles}></ArticleList>
+          ) : (
+            <Col md={12} sm={12}>
+              <div className='spinner'>
+                <FontAwesomeIcon icon={faSpinner} size='4x'></FontAwesomeIcon>
+              </div>
+            </Col>
+          )}
         </Row>
         <div className='pagination-buttons'>
-          <FontAwesomeIcon
-            className='btn-icon'
-            color={'#a11692'}
-            icon={faArrowAltCircleLeft}
-            size='2x'
-          ></FontAwesomeIcon>
+          {previous !== undefined ? (
+            <FontAwesomeIcon
+              className='btn-icon'
+              onClick={previousPage}
+              color={'#a11692'}
+              icon={faArrowAltCircleLeft}
+              size='2x'
+            ></FontAwesomeIcon>
+          ) : (
+            <p>{'  '}</p>
+          )}
 
-          <FontAwesomeIcon
-            className='btn-icon'
-            color={'#a11692'}
-            icon={faArrowAltCircleRight}
-            size='2x'
-          ></FontAwesomeIcon>
+          {next !== undefined ? (
+            <FontAwesomeIcon
+              className='btn-icon'
+              onClick={nextPage}
+              color={'#a11692'}
+              icon={faArrowAltCircleRight}
+              size='2x'
+            ></FontAwesomeIcon>
+          ) : (
+            <p> </p>
+          )}
         </div>
       </Container>
     </div>
   );
 };
 
-export default Landing;
+Hero.propTypes = {
+  articles: PropTypes.array.isRequired
+};
+
+const mapStateToProps = (state) => ({
+  articles: state.articles.allArticles,
+  loading: state.articles.loading,
+  next: state.articles.next,
+  previous: state.articles.previous
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchAllArticles: (page) => dispatch(fetchArticles(page))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Landing);
