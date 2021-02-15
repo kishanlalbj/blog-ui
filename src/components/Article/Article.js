@@ -3,6 +3,13 @@ import { Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 const Article = (props) => {
+  const {
+    articleSubtitle,
+    articleTitle,
+    articleCategory,
+    createdOn,
+    articleContent
+  } = props;
   return (
     <div
       data-test='article'
@@ -13,16 +20,16 @@ const Article = (props) => {
       <Card>
         <Card.Body>
           <Card.Title>
-            <p> {props.title}</p>
+            <p> {articleTitle}</p>
           </Card.Title>
 
           <Card.Subtitle className='mb-2 text-muted'>
-            <p>{props.subtitle}</p>
-            <p className='chip'>{props.tag}</p>
+            <p>{articleSubtitle}</p>
+            <p className='chip'>{articleCategory}</p>
           </Card.Subtitle>
-          <Card.Text>{props.content?.substr(0, 140)}...</Card.Text>
+          <Card.Text>{articleContent?.substr(0, 140)}...</Card.Text>
           <Card.Text className='mb-2 text-muted'>
-            <p>Posted on {new Date(props.createdOn).toLocaleDateString()}</p>
+            <p>Posted on {new Date(createdOn).toLocaleDateString()}</p>
           </Card.Text>
           <button data-test='readmore-btn' className='btn-custom'>
             Read More
@@ -34,10 +41,18 @@ const Article = (props) => {
 };
 
 Article.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
-  tag: PropTypes.string.isRequired,
-  createdOn: PropTypes.string.isRequired
+  articleTitle: PropTypes.string.isRequired,
+  articleSubtitle: PropTypes.string.isRequired,
+  articleContent: PropTypes.string.isRequired,
+  createdOn: PropTypes.string.isRequired,
+  articleCategory: PropTypes.string.isRequired
 };
 
+Article.defaultProps = {
+  articleTitle: '',
+  articleSubtitle: '',
+  articleCategory: '',
+  articleContent: '',
+  createdOn: ''
+};
 export default Article;

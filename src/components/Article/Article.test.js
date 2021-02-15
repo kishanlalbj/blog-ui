@@ -1,35 +1,52 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import Article from './Article';
+import checkPropTypes from 'check-prop-types';
 import { findTestByAttr } from '../../../utils';
 
-const setUp = (props = {}) => shallow(<Article {...props}></Article>);
+const defaultProps = {
+  articleTitle: 'test',
+  articleSubtitle: 'test',
+  articleCategory: 'test',
+  articleContent: 'test',
+  createdOn: 'test'
+};
 
-const initialProps = {
-  title: 'tes',
-  createdOn: Date.now(),
-  content: 'lorem ipsum',
-  tag: 'Life'
+const setUp = (props = {}) => {
+  const setUpProps = { ...defaultProps, ...props };
+  return shallow(<Article {...setUpProps}></Article>);
 };
 
 describe('Article', () => {
   it('should render without error', () => {
-    const wrapper = setUp(initialProps);
+    const wrapper = setUp();
     const articleComponent = findTestByAttr(wrapper, 'article');
     expect(articleComponent.length).toBe(1);
   });
 
-  it('should throw error if props is not passed', () => {
-    const wrapper = setUp();
-    const articleComponentTitle = findTestByAttr(wrapper, 'article').prop(
-      'content'
-    );
-    expect(articleComponentTitle).toBeUndefined();
-  });
-
   it('should render read more button', () => {
-    const wrapper = setUp(initialProps);
+    const wrapper = setUp();
+
     const articleComponentBtn = findTestByAttr(wrapper, 'readmore-btn');
     expect(articleComponentBtn.length).toBe(1);
+  });
+
+  it('should not give error for correct props', () => {
+    const expectedProps = {
+      articleTitle: 'test',
+      articleSubtitle: 'test',
+      articleCategory: 'test',
+      articleContent: 'test',
+      createdOn: 'test'
+    };
+    const propError = checkPropTypes(
+      // eslint-disable-next-line react/forbid-foreign-prop-types
+      Article.propTypes,
+      expectedProps,
+      'prop',
+      Article.name
+    );
+
+    expect(propError).toBeUndefined();
   });
 });

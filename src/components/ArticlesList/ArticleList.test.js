@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import ArticleList from './ArticleList';
 import { findTestByAttr } from '../../../utils/index';
+import checkPropTypes from 'check-prop-types';
 
 const INITIAL_PROPS = {
   articles: [
@@ -27,5 +28,17 @@ describe('Article List', () => {
     });
     const articleList = findTestByAttr(wrapper, 'article-list-no-items').text();
     expect(articleList).toBe('No Articles found');
+  });
+
+  it('should validate props', () => {
+    const expectedProps = { articles: [{ articleTitle: '' }] };
+    const propError = checkPropTypes(
+      ArticleList.propTypes,
+      expectedProps,
+      'prop',
+      ArticleList.name
+    );
+
+    expect(propError).toBeUndefined();
   });
 });
