@@ -8,12 +8,10 @@ describe('Articles Reducer', () => {
   });
 
   it('returns articles from state', () => {
-    const newState = articlesReducer(
-      { articles: [{ title: 'test', subtitle: 'test' }] },
-      {
-        type: types.FETCH_ARTICLES
-      }
-    );
+    const newState = articlesReducer(undefined, {
+      type: types.FETCH_ARTICLES,
+      payload: [{ title: 'test', subtitle: 'test' }]
+    });
 
     expect(newState).toEqual({
       articles: [{ title: 'test', subtitle: 'test' }]

@@ -8,7 +8,8 @@ const articlesReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.FETCH_ARTICLES:
       return {
-        ...state
+        ...state,
+        articles: action.payload
       };
 
     default:

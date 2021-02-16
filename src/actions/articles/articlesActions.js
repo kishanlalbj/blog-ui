@@ -1,7 +1,8 @@
 import { types } from '../types';
 
-export const fetchArticles = () => {
+export const fetchArticles = () => (dispatch) => {
   return {
-    type: types.FETCH_ARTICLES
+    type: types.FETCH_ARTICLES,
+    articles: []
   };
 };
