@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import './Article.scss';
 
 const Article = (props) => {
   const {
@@ -10,6 +11,8 @@ const Article = (props) => {
     createdOn,
     articleContent
   } = props;
+
+  // console.log(articleContent?.substr(0, 140).replace(' ', ''));
   return (
     <div
       data-test='article'
@@ -27,7 +30,13 @@ const Article = (props) => {
             <p>{articleSubtitle}</p>
             <p className='chip'>{articleCategory}</p>
           </Card.Subtitle>
-          <Card.Text>{articleContent?.substr(0, 140)}...</Card.Text>
+
+          <Card.Text
+            className='card-body-test'
+            dangerouslySetInnerHTML={{
+              __html: articleContent?.substr(0, 140) + '...'
+            }}
+          ></Card.Text>
           <Card.Text className='mb-2 text-muted'>
             <p>Posted on {new Date(createdOn).toLocaleDateString()}</p>
           </Card.Text>

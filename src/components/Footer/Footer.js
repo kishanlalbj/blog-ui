@@ -12,7 +12,7 @@ const Footer = () => {
           <FontAwesomeIcon icon={faCopyright}></FontAwesomeIcon>
           &nbsp; 2021
         </p>
-        <p>v1.3.0</p>
+        <p>v2.0.1</p>
         <p>Handcrafted by @kishanlalbj</p>
       </div>
       <div className='custom-shape-divider-top-1613247970'>
