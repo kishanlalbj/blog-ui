@@ -14,7 +14,11 @@ const setUp = (initialState = {}) => {
 describe('Landing page component', () => {
   let wrapper;
   beforeEach(() => {
-    wrapper = setUp();
+    const initialState = {
+      articles: [],
+      loading: false
+    };
+    wrapper = setUp(initialState);
   });
 
   it('render without error', () => {
@@ -23,7 +27,7 @@ describe('Landing page component', () => {
   });
 
   it('should have proper prop types', () => {
-    const expectedProps = { articles: [] };
+    const expectedProps = { articles: [], next: {}, previous: {} };
     const propError = checkPropTypes(
       Landing.propTypes,
       expectedProps,
@@ -31,5 +35,18 @@ describe('Landing page component', () => {
       Landing.name
     );
     expect(propError).toBeUndefined();
+  });
+
+  it('should not display loading if prop loading is true', () => {
+    let loader = findTestByAttr(wrapper, 'loader');
+    expect(loader.length).toBe(0);
+  });
+
+  it('should display loading if prop loading is true', () => {
+    let newWrapper = setUp({
+      loading: true
+    });
+    let loader = findTestByAttr(newWrapper, 'loader');
+    expect(loader.length).toBe(0);
   });
 });
