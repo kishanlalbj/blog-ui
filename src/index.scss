@@ -1,6 +1,15 @@
 @import '~bootstrap/scss/bootstrap';
 @import './variables.scss';
 
+@mixin makeChip($color, $textColor) {
+  display: inline-block;
+  padding: 8px 16px;
+  font-size: 12px;
+  border-radius: 25px;
+  background-color: $color;
+  color: $textColor;
+}
+
 .fa-icon,
 .fa-icon:link,
 .fa-icon:visited {
@@ -19,12 +28,11 @@
 }
 
 .chip {
-  display: inline-block;
-  padding: 8px 16px;
-  font-size: 12px;
-  border-radius: 25px;
-  background-color: $primaryColor;
-  color: #fff;
+  @include makeChip($primaryColor, $white);
+}
+
+.article-chip {
+  @include makeChip($secondaryColor, $color);
 }
 
 .btn-icon {

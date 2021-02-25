@@ -1,0 +1,15 @@
+.card-body-test {
+  min-height: 100px;
+  max-height: 100px;
+}
+
+.article-card {
+  transition: transform 0.2s; /* Animation */
+  box-shadow: 5px 10px solid rgb(187, 185, 185);
+}
+
+.article-card:hover {
+  transform: scale(1.05);
+  z-index: 999;
+  box-shadow: 2px 4px solid rgb(187, 185, 185);
+}

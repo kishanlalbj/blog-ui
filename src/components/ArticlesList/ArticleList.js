@@ -1,5 +1,5 @@
 import React from 'react';
-import Article from '../Article/Article';
+import ArticleCard from '../ArticleCard/ArticleCard';
 import { Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
@@ -10,13 +10,14 @@ const ArticleList = (props) => {
       {articles.length > 0 ? (
         articles.map((article, index) => (
           <Col md={6} xs={12} sm={12} key={index} data-test='article-list'>
-            <Article
+            <ArticleCard
+              articleId={article._id}
               articleTitle={article.articleTitle}
               articleSubtitle={article.articleSubtitle}
               articleContent={article.articleContent}
               createdOn={article.createdOn}
               articleCategory={article.articleCategory}
-            ></Article>
+            ></ArticleCard>
           </Col>
         ))
       ) : (

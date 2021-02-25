@@ -1,10 +1,14 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import './Article.scss';
+import './ArticleCard.scss';
+import Button from '../Inputs/Button/Button';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 const Article = (props) => {
   const {
+    articleId,
     articleSubtitle,
     articleTitle,
     articleCategory,
@@ -12,10 +16,10 @@ const Article = (props) => {
     articleContent
   } = props;
 
-  // console.log(articleContent?.substr(0, 140).replace(' ', ''));
   return (
     <div
       data-test='article'
+      className='article-card'
       style={{
         marginBottom: '20px'
       }}
@@ -38,11 +42,20 @@ const Article = (props) => {
             }}
           ></Card.Text>
           <Card.Text className='mb-2 text-muted'>
-            <p>Posted on {new Date(createdOn).toLocaleDateString()}</p>
+            Posted on {moment(createdOn).format('LL')}
           </Card.Text>
-          <button data-test='readmore-btn' className='btn-custom'>
+          <br></br>
+          <Link
+            className='btn-custom'
+            style={{
+              textDecoration: 'none',
+              color: '#000'
+            }}
+            to={`/article/${articleId}`}
+            data-test='readmore-btn'
+          >
             Read More
-          </button>
+          </Link>
         </Card.Body>
       </Card>
     </div>

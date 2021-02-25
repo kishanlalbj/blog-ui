@@ -1,5 +1,6 @@
 import { types } from '../types';
 import axios from 'axios';
+import { API_BASE_URL } from '../../constants';
 
 export const fetchArticles = (page = 1) => async (dispatch) => {
   dispatch({
@@ -7,7 +8,7 @@ export const fetchArticles = (page = 1) => async (dispatch) => {
     payload: true
   });
   let response = await axios.get(
-    `https://scribblesofpallavi.herokuapp.com/api/articles?page=${page}&limit=4`
+    `${API_BASE_URL}/articles?page=${page}&limit=4`
   );
   dispatch({
     type: types.SET_LOADING,
