@@ -2,7 +2,6 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import './ArticleCard.scss';
-import Button from '../Inputs/Button/Button';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
@@ -17,13 +16,7 @@ const Article = (props) => {
   } = props;
 
   return (
-    <div
-      data-test='article'
-      className='article-card'
-      style={{
-        marginBottom: '20px'
-      }}
-    >
+    <div data-test='article' className='article-card'>
       <Card>
         <Card.Body>
           <Card.Title>
@@ -47,10 +40,6 @@ const Article = (props) => {
           <br></br>
           <Link
             className='btn-custom'
-            style={{
-              textDecoration: 'none',
-              color: '#000'
-            }}
             to={`/article/${articleId}`}
             data-test='readmore-btn'
           >

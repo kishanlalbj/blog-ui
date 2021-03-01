@@ -21,9 +21,12 @@
   color: black;
   padding: 10px;
   border: 1px solid transparent;
+  text-decoration: none;
   &:hover {
     background: #fff;
     border: 1px solid $primaryColor;
+    text-decoration: none;
+    color: black;
   }
 }
 

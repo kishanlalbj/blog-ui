@@ -28,7 +28,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jsdom",
     "test:nowatch": "cross-env CI=true react-scripts test",
     "coverage": "cross-env CI=true react-scripts test -env=jsdom --coverage --reporters=default",
     "eject": "react-scripts eject"

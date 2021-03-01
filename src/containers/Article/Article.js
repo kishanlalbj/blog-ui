@@ -2,6 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { Card, Container } from 'react-bootstrap';
+import Comments from '../../components/Comments/Comments';
 import Footer from '../../components/Footer/Footer';
 import { API_BASE_URL } from '../../constants';
 
@@ -44,14 +45,8 @@ class Article extends Component {
             <div className='logo-box'>
               <h1 data-test='article-title'>{articleTitle}</h1>
               <h4 data-test='article-subtitle'>{articleSubtitle}</h4>
-              <p className='article-chip'>{articleCategory}</p>
               &nbsp;&nbsp;
-              <span data-test='article-author'>
-                {author}{' '}
-                <span data-test='article-createdOn'>
-                  {moment(createdOn).format('LL')}{' '}
-                </span>
-              </span>
+              <span data-test='article-author'></span>
             </div>
 
             <div className='custom-shape-divider-bottom-1613237233'>
@@ -85,6 +80,11 @@ class Article extends Component {
 
         <Container>
           <article>
+            <span data-test='article-createdOn'>
+              <p className='chip'>{articleCategory}</p>
+              &nbsp;&nbsp;&nbsp;
+              {moment(createdOn).format('LL')}{' '}
+            </span>
             <div
               data-test='article-content'
               dangerouslySetInnerHTML={{ __html: articleContent }}
@@ -100,26 +100,7 @@ class Article extends Component {
             {comments.length > 0
               ? comments.map((comment) => {
                   return (
-                    <div
-                      key={comment.id}
-                      style={{
-                        margin: '15px 0px',
-                        borderRadius: '10px',
-                        padding: '10px',
-                        backgroundColor: 'rgb(240 242 245)'
-                      }}
-                    >
-                      <h6>{comment.commenterName}</h6>
-                      <p>{comment.commentText}</p>
-                      <p
-                        style={{
-                          fontSize: '12px',
-                          fontWeight: '600'
-                        }}
-                      >
-                        Reply
-                      </p>
-                    </div>
+                    <Comments key={comment.id} comment={comment}></Comments>
                   );
                 })
               : null}
