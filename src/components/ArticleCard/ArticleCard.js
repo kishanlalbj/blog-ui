@@ -1,10 +1,13 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import './Article.scss';
+import './ArticleCard.scss';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 
-const Article = (props) => {
+const ArticleCard = (props) => {
   const {
+    articleId,
     articleSubtitle,
     articleTitle,
     articleCategory,
@@ -12,14 +15,8 @@ const Article = (props) => {
     articleContent
   } = props;
 
-  // console.log(articleContent?.substr(0, 140).replace(' ', ''));
   return (
-    <div
-      data-test='article'
-      style={{
-        marginBottom: '20px'
-      }}
-    >
+    <div data-test='article' className='article-card'>
       <Card>
         <Card.Body>
           <Card.Title>
@@ -38,18 +35,23 @@ const Article = (props) => {
             }}
           ></Card.Text>
           <Card.Text className='mb-2 text-muted'>
-            <p>Posted on {new Date(createdOn).toLocaleDateString()}</p>
+            Posted on {moment(createdOn).format('LL')}
           </Card.Text>
-          <button data-test='readmore-btn' className='btn-custom'>
+          <br></br>
+          <Link
+            className='btn-custom'
+            to={`/article/${articleId}`}
+            data-test='readmore-btn'
+          >
             Read More
-          </button>
+          </Link>
         </Card.Body>
       </Card>
     </div>
   );
 };
 
-Article.propTypes = {
+ArticleCard.propTypes = {
   articleTitle: PropTypes.string.isRequired,
   articleSubtitle: PropTypes.string.isRequired,
   articleContent: PropTypes.string.isRequired,
@@ -57,11 +59,11 @@ Article.propTypes = {
   articleCategory: PropTypes.string.isRequired
 };
 
-Article.defaultProps = {
+ArticleCard.defaultProps = {
   articleTitle: '',
   articleSubtitle: '',
   articleCategory: '',
   articleContent: '',
   createdOn: ''
 };
-export default Article;
+export default ArticleCard;

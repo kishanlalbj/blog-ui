@@ -4,7 +4,7 @@ import {
   faSpinner
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Container, Row, Col } from 'react-bootstrap';
@@ -12,61 +12,71 @@ import ArticlesList from '../../components/ArticlesList/ArticleList';
 import Hero from '../../components/Hero/Hero';
 import './Landing.scss';
 import { fetchArticles } from '../../actions/articles/articlesActions';
+import Footer from '../../components/Footer/Footer';
 
-const Landing = (props) => {
-  const { articles, next, previous, fetchArticles, loading } = props;
+class Landing extends Component {
+  componentDidMount = () => {
+    this.props.fetchArticles(1);
+    window.scrollTo(0, 0);
+  };
 
-  useEffect(() => {
-    props.fetchArticles();
-  }, []);
+  render() {
+    const { articles, next, previous, fetchArticles, loading } = this.props;
+    return (
+      <div data-test='landing'>
+        <Hero></Hero>
+        <Container>
+          <Row style={{ height: '100%', padding: '20px' }}>
+            {!loading ? (
+              <ArticlesList articles={articles}></ArticlesList>
+            ) : (
+              <Col
+                md={12}
+                xs={12}
+                style={{ height: '750px' }}
+                data-test='loader'
+              >
+                <div className='loader-container spinner'>
+                  <FontAwesomeIcon
+                    color={'#a11692'}
+                    icon={faSpinner}
+                    size='2x'
+                  ></FontAwesomeIcon>
+                </div>
+              </Col>
+            )}
+          </Row>
+          <div className='pagination-buttons'>
+            {previous ? (
+              <FontAwesomeIcon
+                className='btn-icon'
+                color={'#a11692'}
+                icon={faArrowAltCircleLeft}
+                size='2x'
+                onClick={() => fetchArticles(previous.page)}
+              ></FontAwesomeIcon>
+            ) : (
+              <div></div>
+            )}
+            {next ? (
+              <FontAwesomeIcon
+                className='btn-icon'
+                color={'#a11692'}
+                icon={faArrowAltCircleRight}
+                size='2x'
+                onClick={() => fetchArticles(next.page)}
+              ></FontAwesomeIcon>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        </Container>
 
-  return (
-    <div data-test='landing'>
-      <Hero></Hero>
-      <Container>
-        <Row style={{ height: '100%', padding: '20px' }}>
-          {!loading ? (
-            <ArticlesList articles={articles}></ArticlesList>
-          ) : (
-            <Col md={12} xs={12} style={{ height: '750px' }} data-test='loader'>
-              <div className='loader-container spinner'>
-                <FontAwesomeIcon
-                  color={'#a11692'}
-                  icon={faSpinner}
-                  size='2x'
-                ></FontAwesomeIcon>
-              </div>
-            </Col>
-          )}
-        </Row>
-        <div className='pagination-buttons'>
-          {previous ? (
-            <FontAwesomeIcon
-              className='btn-icon'
-              color={'#a11692'}
-              icon={faArrowAltCircleLeft}
-              size='2x'
-              onClick={() => fetchArticles(previous.page)}
-            ></FontAwesomeIcon>
-          ) : (
-            <div></div>
-          )}
-          {next ? (
-            <FontAwesomeIcon
-              className='btn-icon'
-              color={'#a11692'}
-              icon={faArrowAltCircleRight}
-              size='2x'
-              onClick={() => fetchArticles(next.page)}
-            ></FontAwesomeIcon>
-          ) : (
-            <div></div>
-          )}
-        </div>
-      </Container>
-    </div>
-  );
-};
+        <Footer></Footer>
+      </div>
+    );
+  }
+}
 
 Landing.propTypes = {
   articles: PropTypes.array.isRequired,
