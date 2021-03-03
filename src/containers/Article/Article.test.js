@@ -34,4 +34,21 @@ describe('Article Component', () => {
     const articleCreatedOn = findTestByAttr(wrapper, 'article-footer');
     expect(articleCreatedOn.length).toBe(1);
   });
+
+  it('should display comments if there are any', () => {
+    wrapper.setState({
+      comments: [{ commenterName: 'Kishan', commentText: 'comment' }]
+    });
+    let comments = findTestByAttr(wrapper, 'comments');
+    expect(comments.length).toBe(1);
+  });
+
+  it('should not display comments if there is none', () => {
+    wrapper.setState({
+      comments: []
+    });
+
+    let comments = findTestByAttr(wrapper, 'comments');
+    expect(comments.length).toBe(0);
+  });
 });

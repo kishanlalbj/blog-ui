@@ -5,7 +5,7 @@ import './ArticleCard.scss';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-const Article = (props) => {
+const ArticleCard = (props) => {
   const {
     articleId,
     articleSubtitle,
@@ -51,7 +51,7 @@ const Article = (props) => {
   );
 };
 
-Article.propTypes = {
+ArticleCard.propTypes = {
   articleTitle: PropTypes.string.isRequired,
   articleSubtitle: PropTypes.string.isRequired,
   articleContent: PropTypes.string.isRequired,
@@ -59,11 +59,11 @@ Article.propTypes = {
   articleCategory: PropTypes.string.isRequired
 };
 
-Article.defaultProps = {
+ArticleCard.defaultProps = {
   articleTitle: '',
   articleSubtitle: '',
   articleCategory: '',
   articleContent: '',
   createdOn: ''
 };
-export default Article;
+export default ArticleCard;

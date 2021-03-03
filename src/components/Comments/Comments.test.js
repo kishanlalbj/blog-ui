@@ -38,4 +38,16 @@ describe('Comments Component', () => {
     const replies = findTestByAttr(newWrapper, 'replies');
     expect(replies.length).toBe(0);
   });
+
+  it('should not display reply', () => {
+    wrapper.setState({ isOpen: false });
+    let reply = findTestByAttr(wrapper, 'reply');
+    expect(reply.length).toBe(0);
+  });
+
+  it('should display reply', () => {
+    wrapper.setState({ isOpen: true });
+    let reply = findTestByAttr(wrapper, 'reply');
+    expect(reply.length).toBe(1);
+  });
 });

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { Card, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import Comments from '../../components/Comments/Comments';
 import Footer from '../../components/Footer/Footer';
 import { API_BASE_URL } from '../../constants';
@@ -100,7 +100,11 @@ class Article extends Component {
             {comments.length > 0
               ? comments.map((comment) => {
                   return (
-                    <Comments key={comment.id} comment={comment}></Comments>
+                    <Comments
+                      data-test='comments'
+                      key={comment.id}
+                      comment={comment}
+                    ></Comments>
                   );
                 })
               : null}
