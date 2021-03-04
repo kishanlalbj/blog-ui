@@ -6,6 +6,7 @@ import checkPropTypes from 'check-prop-types';
 
 const setUp = (initialState = {}) => {
   const store = storeFactory(initialState);
+  console.log(store.getState());
   return shallow(<Landing store={store}></Landing>)
     .dive()
     .dive();
@@ -41,12 +42,23 @@ describe('Landing page component', () => {
     let loader = findTestByAttr(wrapper, 'loader');
     expect(loader.length).toBe(0);
   });
+});
+
+describe('Landing loader', () => {
+  let wrapper;
+  beforeEach(() => {
+    const initialState = {
+      articles: {
+        articles: [],
+        loading: true
+      }
+    };
+    wrapper = setUp(initialState);
+  });
 
   it('should display loading if prop loading is true', () => {
-    let newWrapper = setUp({
-      loading: true
-    });
-    let loader = findTestByAttr(newWrapper, 'loader');
-    expect(loader.length).toBe(0);
+    let loader = findTestByAttr(wrapper, 'loader');
+    console.log('loader', loader);
+    expect(loader.length).toBe(1);
   });
 });

@@ -27,8 +27,6 @@ class Landing extends Component {
     if (
       JSON.stringify(prevProps.articles) !== JSON.stringify(this.props.articles)
     ) {
-      console.log('old articles', prevProps.articles);
-      console.log('new articles', this.props.articles);
       this.setState(() => ({
         articles: [...prevState.articles, ...this.props.articles]
       }));
@@ -49,8 +47,6 @@ class Landing extends Component {
       window.innerHeight + window.scrollY >=
       document.body.offsetHeight - 400
     ) {
-      console.log("you're at the bottom of the page");
-
       if (
         (this.props.next && !this.state.called) ||
         (this.props.next && this.props.next?.page !== this.state.page)
@@ -82,6 +78,7 @@ class Landing extends Component {
               <center>
                 {loading ? (
                   <FontAwesomeIcon
+                    data-test='loader'
                     icon={faSpinner}
                     color={'#a11692'}
                     size='3x'
