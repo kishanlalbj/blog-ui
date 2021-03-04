@@ -1,10 +1,6 @@
-import {
-  faArrowAltCircleRight,
-  faArrowAltCircleLeft,
-  faSpinner
-} from '@fortawesome/free-solid-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { Component, createRef } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Container, Row, Col } from 'react-bootstrap';
@@ -15,63 +11,87 @@ import { fetchArticles } from '../../actions/articles/articlesActions';
 import Footer from '../../components/Footer/Footer';
 
 class Landing extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      page: 1,
+      articles: this.props.articles,
+      called: false
+    };
+    this.landingContainer = React.createRef();
+
+    this.onScrollHandler = this.onScrollHandler.bind(this);
+  }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if (
+      JSON.stringify(prevProps.articles) !== JSON.stringify(this.props.articles)
+    ) {
+      console.log('old articles', prevProps.articles);
+      console.log('new articles', this.props.articles);
+      this.setState(() => ({
+        articles: [...prevState.articles, ...this.props.articles]
+      }));
+    }
+  };
+
   componentDidMount = () => {
-    this.props.fetchArticles(1);
-    window.scrollTo(0, 0);
+    this.props.fetchArticles(this.state.page);
+    window.addEventListener('scroll', this.onScrollHandler);
+  };
+
+  componentWillUnmount = () => {
+    window.removeEventListener('scroll', this.onScrollHandler);
+  };
+
+  onScrollHandler = () => {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - 400
+    ) {
+      console.log("you're at the bottom of the page");
+
+      if (
+        (this.props.next && !this.state.called) ||
+        (this.props.next && this.props.next?.page !== this.state.page)
+      ) {
+        this.setState({
+          called: true,
+          page: this.props.next?.page
+        });
+        this.props.fetchArticles(this.props.next?.page);
+      }
+    }
   };
 
   render() {
-    const { articles, next, previous, fetchArticles, loading } = this.props;
+    const { loading } = this.props;
+    const { articles } = this.state;
     return (
-      <div data-test='landing'>
+      <div
+        data-test='landing'
+        ref={this.landingContainer}
+        onScroll={this.onScrollHandler}
+      >
         <Hero></Hero>
         <Container>
-          <Row style={{ height: '100%', padding: '20px' }}>
-            {!loading ? (
-              <ArticlesList articles={articles}></ArticlesList>
-            ) : (
-              <Col
-                md={12}
-                xs={12}
-                style={{ height: '750px' }}
-                data-test='loader'
-              >
-                <div className='loader-container spinner'>
-                  <FontAwesomeIcon
-                    color={'#a11692'}
-                    icon={faSpinner}
-                    size='2x'
-                  ></FontAwesomeIcon>
-                </div>
-              </Col>
-            )}
-          </Row>
-          <div className='pagination-buttons'>
-            {previous ? (
-              <FontAwesomeIcon
-                className='btn-icon'
-                color={'#a11692'}
-                icon={faArrowAltCircleLeft}
-                size='2x'
-                onClick={() => fetchArticles(previous.page)}
-              ></FontAwesomeIcon>
-            ) : (
-              <div></div>
-            )}
-            {next ? (
-              <FontAwesomeIcon
-                className='btn-icon'
-                color={'#a11692'}
-                icon={faArrowAltCircleRight}
-                size='2x'
-                onClick={() => fetchArticles(next.page)}
-              ></FontAwesomeIcon>
-            ) : (
-              <div></div>
-            )}
-          </div>
-        </Container>
+          <Row className='landing-container-row'>
+            <ArticlesList articles={articles}></ArticlesList>
 
+            <Col md={12} sm={12}>
+              <center>
+                {loading ? (
+                  <FontAwesomeIcon
+                    icon={faSpinner}
+                    color={'#a11692'}
+                    size='3x'
+                    className='spinner'
+                  />
+                ) : null}
+              </center>
+            </Col>
+          </Row>
+        </Container>
         <Footer></Footer>
       </div>
     );

@@ -83,7 +83,14 @@ class Article extends Component {
             <span data-test='article-createdOn'>
               <p className='chip'>{articleCategory}</p>
               &nbsp;&nbsp;&nbsp;
-              {moment(createdOn).format('LL')}{' '}
+              <span
+                style={{
+                  color: '#b7b7b7'
+                }}
+              >
+                {' '}
+                {moment(createdOn).format('LL')}{' '}
+              </span>
             </span>
             <div
               data-test='article-content'

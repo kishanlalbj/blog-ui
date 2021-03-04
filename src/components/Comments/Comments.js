@@ -29,14 +29,17 @@ class Comments extends Component {
               >
                 {comment.replies.length} Replies
               </p>
-            ) : null}
+            ) : (
+              <p className='comments-footer'>Reply</p>
+            )}
           </span>
           {isOpen ? (
             <div data-test='reply'>
               {comment.replies.map((reply) => (
-                <span key={reply._id} className='reply'>
+                <div key={reply._id} className='reply'>
                   <span className='reply-name'>{reply.name}</span>- {reply.text}
-                </span>
+                  <br></br>
+                </div>
               ))}
             </div>
           ) : null}
