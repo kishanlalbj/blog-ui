@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import { Col, Form, FormControl, Row } from 'react-bootstrap';
 import './Comments.scss';
 class Comments extends Component {
   state = {
     isOpen: false
   };
 
-  openReplies = () => {
+  handleOpenReplies = () => {
+    console.log('Toggling');
     this.setState((prevState) => ({
       isOpen: !prevState.isOpen
     }));
@@ -13,6 +15,7 @@ class Comments extends Component {
 
   render() {
     const { comment } = this.props;
+    console.log(comment);
     const { isOpen } = this.state;
 
     return (
@@ -23,14 +26,16 @@ class Comments extends Component {
           <span>
             {comment.replies.length > 0 ? (
               <p
-                onClick={this.openReplies}
+                onClick={this.handleOpenReplies}
                 data-test='replies'
                 className='comments-footer'
               >
                 {comment.replies.length} Replies
               </p>
             ) : (
-              <p className='comments-footer'>Reply</p>
+              <p className='comments-footer' onClick={this.handleOpenReplies}>
+                Reply
+              </p>
             )}
           </span>
           {isOpen ? (
@@ -41,6 +46,21 @@ class Comments extends Component {
                   <br></br>
                 </div>
               ))}
+              <div className='reply'>
+                <Form>
+                  <Row>
+                    <Col md={2}>
+                      <FormControl placeholder='Name'></FormControl>
+                    </Col>
+                    <Col md={8}>
+                      <FormControl placeholder='Reply'></FormControl>
+                    </Col>
+                    <Col md={2}>
+                      <button className='btn-transparent'>Reply</button>
+                    </Col>
+                  </Row>
+                </Form>
+              </div>
             </div>
           ) : null}
         </div>

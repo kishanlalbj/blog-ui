@@ -1,6 +1,6 @@
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { Component } from 'react';
+import React, { Component, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Container, Row, Col } from 'react-bootstrap';
@@ -10,90 +10,67 @@ import './Landing.scss';
 import { fetchArticles } from '../../actions/articles/articlesActions';
 import Footer from '../../components/Footer/Footer';
 
-class Landing extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: 1,
-      articles: this.props.articles,
-      called: false
-    };
-    this.landingContainer = React.createRef();
+const Landing = (props) => {
+  const getArticles = useCallback(() => props.fetchArticles(), []);
 
-    this.onScrollHandler = this.onScrollHandler.bind(this);
-  }
+  useEffect(() => {
+    getArticles();
+  }, [getArticles]);
 
-  componentDidUpdate = (prevProps, prevState) => {
-    if (
-      JSON.stringify(prevProps.articles) !== JSON.stringify(this.props.articles)
-    ) {
-      this.setState(() => ({
-        articles: [...prevState.articles, ...this.props.articles]
-      }));
-    }
+  const handleNext = () => {
+    props.fetchArticles(props.next.page);
   };
 
-  componentDidMount = () => {
-    this.props.fetchArticles(this.state.page);
-    window.addEventListener('scroll', this.onScrollHandler);
+  const handlePrevious = () => {
+    props.fetchArticles(props.previous.page);
   };
 
-  componentWillUnmount = () => {
-    window.removeEventListener('scroll', this.onScrollHandler);
-  };
-
-  onScrollHandler = () => {
-    if (
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight - 400
-    ) {
-      if (
-        (this.props.next && !this.state.called) ||
-        (this.props.next && this.props.next?.page !== this.state.page)
-      ) {
-        this.setState({
-          called: true,
-          page: this.props.next?.page
-        });
-        this.props.fetchArticles(this.props.next?.page);
-      }
-    }
-  };
-
-  render() {
-    const { loading } = this.props;
-    const { articles } = this.state;
-    return (
-      <div
-        data-test='landing'
-        ref={this.landingContainer}
-        onScroll={this.onScrollHandler}
-      >
-        <Hero></Hero>
-        <Container>
-          <Row className='landing-container-row'>
-            <ArticlesList articles={articles}></ArticlesList>
-
-            <Col md={12} sm={12}>
+  return (
+    <div data-test='landing'>
+      <Hero></Hero>
+      <Container>
+        <Row className='landing-container-row'>
+          <Col md={12} sm={12}>
+            {props.loading ? (
               <center>
-                {loading ? (
-                  <FontAwesomeIcon
-                    data-test='loader'
-                    icon={faSpinner}
-                    color={'#a11692'}
-                    size='3x'
-                    className='spinner'
-                  />
-                ) : null}
+                <FontAwesomeIcon
+                  data-test='loader'
+                  icon={faSpinner}
+                  color={'#a11692'}
+                  size='3x'
+                  className='spinner'
+                />
               </center>
-            </Col>
-          </Row>
-        </Container>
-        <Footer></Footer>
-      </div>
-    );
-  }
-}
+            ) : (
+              <ArticlesList articles={props.articles}></ArticlesList>
+            )}
+          </Col>
+
+          <Col md={12} sm={12}>
+            <div className='articles-navigation'>
+              <div className='articles-navigation-previous'>
+                {props.previous && (
+                  <button className='btn-navigation' onClick={handlePrevious}>
+                    Previous
+                  </button>
+                )}
+              </div>
+
+              <div className='articles-navigation-next'>
+                {props.next && (
+                  <button className='btn-navigation' onClick={handleNext}>
+                    Next
+                  </button>
+                )}
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+      <Footer></Footer>
+    </div>
+  );
+};
 
 Landing.propTypes = {
   articles: PropTypes.array.isRequired,

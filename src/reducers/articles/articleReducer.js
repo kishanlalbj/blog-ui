@@ -8,13 +8,16 @@ const INITIAL_STATE = {
 };
 
 const articlesReducer = (state = INITIAL_STATE, action) => {
+  console.log(action);
   switch (action.type) {
     case types.FETCH_ARTICLES:
+      const { articles, next, previous } = action.payload;
+      console.log('articles', articles);
       return {
         ...state,
-        articles: [...action.payload.articles],
-        next: action.payload.next,
-        previous: action.payload.previous
+        articles,
+        next,
+        previous
       };
     case types.SET_LOADING:
       return {

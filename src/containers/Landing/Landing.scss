@@ -25,6 +25,12 @@
   // width: 1200px;
 }
 
+.articles-navigation {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

@@ -22,6 +22,8 @@
   padding: 10px;
   border: 1px solid transparent;
   text-decoration: none;
+  min-width: 100px;
+  max-width: 100%;
   &:hover {
     background: #fff;
     border: 1px solid $primaryColor;
@@ -30,6 +32,26 @@
   }
 }
 
+.btn-transparent {
+  background-color: transparent;
+  padding: 4px 10px;
+  border: 1px solid $primaryColor;
+  color: black;
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.btn-navigation {
+  background-color: $primaryColor;
+  padding: 4px 10px;
+  border: 1px solid $primaryColor;
+  color: white;
+  &:hover {
+    background-color: transparent;
+    color: $primaryColor;
+  }
+}
 .chip {
   @include makeChip($primaryColor, $white);
 }
