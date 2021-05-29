@@ -16,15 +16,18 @@ class Article extends Component {
     comments: []
   };
 
-  componentDidMount = async () => {
+  fetchArticle = async () => {
     let response = await axios.get(
       `${API_BASE_URL}/articles/${this.props.match.params?.articleId}`
     );
-    window.scrollTo(0, 0);
 
     this.setState({
       ...response.data
     });
+  };
+
+  componentDidMount = () => {
+    this.fetchArticle();
   };
 
   render() {
@@ -111,6 +114,8 @@ class Article extends Component {
                       data-test='comments'
                       key={comment.id}
                       comment={comment}
+                      articleId={this.props.match.params?.articleId}
+                      updateArticle={this.fetchArticle}
                     ></Comments>
                   );
                 })
