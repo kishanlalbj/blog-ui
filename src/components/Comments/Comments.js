@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react';
 import { Col, Form, FormControl, Row } from 'react-bootstrap';
-import { API_BASE_URL } from '../../constants';
 import './Comments.scss';
 class Comments extends Component {
   state = {
@@ -24,22 +24,20 @@ class Comments extends Component {
   handleReplyToComment = async (e) => {
     try {
       e.preventDefault();
-      let resp = await axios.post(`${API_BASE_URL}/articles/comment/reply`, {
-        articleId: this.props.articleId,
-        commentId: this.props.comment._id,
-        replyObj: {
-          name: this.state.name,
-          text: this.state.replyText
-        }
-      });
 
-      console.log(resp.data);
-      this.props.updateArticle();
+      this.props.replyToComment(this.props.comment._id, {
+        name: this.state.name,
+        text: this.state.replyText
+      });
       this.clearReplyForm();
     } catch (e) {
       console.log(e);
       this.setState({ error: 'Error replying to comment' });
     }
+  };
+
+  handleCommentDelete = () => {
+    this.props.deleteComment(this.props.comment._id);
   };
 
   render() {
@@ -48,9 +46,20 @@ class Comments extends Component {
 
     return (
       <div data-test='comment-section'>
-        <div key={comment.id} className='comments-container'>
-          <h6>{comment.commenterName}</h6>
-          <p>{comment.commentText}</p>
+        <div key={comment._id} className='comments-container'>
+          <div>
+            <FontAwesomeIcon
+              className='btn-icon'
+              style={{
+                float: 'right'
+              }}
+              icon={faTrashAlt}
+              onClick={() => this.handleCommentDelete()}
+              color='red'
+            ></FontAwesomeIcon>
+            <h6>{comment.commenterName}</h6>
+            <p>{comment.commentText}</p>
+          </div>
           <span>
             {comment.replies.length > 0 ? (
               <p
@@ -66,12 +75,15 @@ class Comments extends Component {
               </p>
             )}
           </span>
+
           {isOpen ? (
             <div data-test='reply'>
               {comment.replies.map((reply) => (
-                <div key={reply._id} className='reply'>
-                  <span className='reply-name'>{reply.name}</span>- {reply.text}
-                  <br></br>
+                <div key={reply._id} className='reply-container'>
+                  <div className='reply'>
+                    <span className='reply-name'>{reply.name}</span>-{' '}
+                    {reply.text}
+                  </div>
                 </div>
               ))}
               <div className='reply'>
@@ -106,7 +118,6 @@ class Comments extends Component {
               </div>
             </div>
           ) : null}
-          {/* {error && <p>{error}</p>} */}
         </div>
       </div>
     );
