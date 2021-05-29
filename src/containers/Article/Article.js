@@ -1,7 +1,13 @@
 import axios from 'axios';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { Container } from 'react-bootstrap';
+import {
+  Container,
+  Form,
+  FormControl,
+  FormGroup,
+  FormLabel
+} from 'react-bootstrap';
 import Comments from '../../components/Comments/Comments';
 import Footer from '../../components/Footer/Footer';
 import { API_BASE_URL } from '../../constants';
@@ -13,7 +19,9 @@ class Article extends Component {
     articleContent: '',
     author: '',
     createdOn: '',
-    comments: []
+    comments: [],
+    commenterName: '',
+    commentText: ''
   };
 
   fetchArticle = async () => {
@@ -24,6 +32,31 @@ class Article extends Component {
     this.setState({
       ...response.data
     });
+  };
+
+  onChangeHandler = (e) => this.setState({ [e.target.name]: e.target.value });
+
+  clearCommentForm = () => {
+    this.setState({
+      commenterName: '',
+      commentText: ''
+    });
+  };
+
+  onPostComment = async (e) => {
+    e.preventDefault();
+    let payload = {
+      id: this.props.match.params?.articleId,
+      commenterName: this.state.commenterName,
+      commentText: this.state.commentText
+    };
+
+    console.log(payload);
+
+    let resp = await axios.post(`${API_BASE_URL}/articles/comment`, payload);
+    console.log(resp.data);
+    this.fetchArticle();
+    this.clearCommentForm();
   };
 
   componentDidMount = () => {
@@ -69,7 +102,9 @@ class Article extends Component {
       articleContent,
       articleCategory,
       createdOn,
-      comments
+      comments,
+      commenterName,
+      commentText
     } = this.state;
 
     return (
@@ -122,7 +157,6 @@ class Article extends Component {
                   color: '#b7b7b7'
                 }}
               >
-                {' '}
                 {moment(createdOn).format('LL')}{' '}
               </span>
             </span>
@@ -135,6 +169,40 @@ class Article extends Component {
           <hr></hr>
           <section>
             <h4>Comments</h4>
+            <div>
+              <Form>
+                <FormGroup>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl
+                    type='text'
+                    placeholder='Your Name'
+                    width={250}
+                    name='commenterName'
+                    value={commenterName}
+                    onChange={this.onChangeHandler}
+                  ></FormControl>
+                </FormGroup>
+
+                <FormGroup>
+                  <FormLabel>Comment</FormLabel>
+                  <FormControl
+                    as='textarea'
+                    cols={4}
+                    rows={5}
+                    name='commentText'
+                    value={commentText}
+                    onChange={this.onChangeHandler}
+                    placeholder='Your Comment'
+                  ></FormControl>
+                </FormGroup>
+
+                <FormGroup>
+                  <button className='btn-custom' onClick={this.onPostComment}>
+                    Comment
+                  </button>
+                </FormGroup>
+              </Form>
+            </div>
 
             {comments.length === 0 ? <p>No Comments</p> : null}
 
