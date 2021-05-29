@@ -87,7 +87,7 @@ class Comments extends Component {
                 </div>
               ))}
               <div className='reply'>
-                <Form>
+                <Form data-test='reply-form'>
                   <Row>
                     <Col md={2}>
                       <FormControl

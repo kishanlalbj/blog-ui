@@ -33,6 +33,12 @@ describe('Comments Component', () => {
     expect(replies.length).toBe(1);
   });
 
+  it('should display reply form', () => {
+    wrapper.setState({ isOpen: true });
+    const replyForm = findTestByAttr(wrapper, 'reply-form');
+    expect(replyForm.length).toBe(1);
+  });
+
   it('should not display replies if its empty', () => {
     let newWrapper = setUp({ comment: { replies: [] } });
     const replies = findTestByAttr(newWrapper, 'replies');
