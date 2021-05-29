@@ -1,9 +1,14 @@
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react';
 import { Col, Form, FormControl, Row } from 'react-bootstrap';
 import './Comments.scss';
 class Comments extends Component {
   state = {
-    isOpen: false
+    isOpen: false,
+    name: '',
+    replyText: '',
+    error: ''
   };
 
   handleOpenReplies = () => {
@@ -12,15 +17,49 @@ class Comments extends Component {
     }));
   };
 
+  onChangeHandler = (e) => this.setState({ [e.target.name]: e.target.value });
+
+  clearReplyForm = () => this.setState({ name: '', replyText: '' });
+
+  handleReplyToComment = async (e) => {
+    try {
+      e.preventDefault();
+
+      this.props.replyToComment(this.props.comment._id, {
+        name: this.state.name,
+        text: this.state.replyText
+      });
+      this.clearReplyForm();
+    } catch (e) {
+      console.log(e);
+      this.setState({ error: 'Error replying to comment' });
+    }
+  };
+
+  handleCommentDelete = () => {
+    this.props.deleteComment(this.props.comment._id);
+  };
+
   render() {
     const { comment } = this.props;
-    const { isOpen } = this.state;
+    const { isOpen, name, replyText } = this.state;
 
     return (
       <div data-test='comment-section'>
-        <div key={comment.id} className='comments-container'>
-          <h6>{comment.commenterName}</h6>
-          <p>{comment.commentText}</p>
+        <div key={comment._id} className='comments-container'>
+          <div>
+            <FontAwesomeIcon
+              className='btn-icon'
+              style={{
+                float: 'right'
+              }}
+              icon={faTrashAlt}
+              onClick={() => this.handleCommentDelete()}
+              color='red'
+            ></FontAwesomeIcon>
+            <h6>{comment.commenterName}</h6>
+            <p>{comment.commentText}</p>
+          </div>
           <span>
             {comment.replies.length > 0 ? (
               <p
@@ -36,25 +75,43 @@ class Comments extends Component {
               </p>
             )}
           </span>
+
           {isOpen ? (
             <div data-test='reply'>
               {comment.replies.map((reply) => (
-                <div key={reply._id} className='reply'>
-                  <span className='reply-name'>{reply.name}</span>- {reply.text}
-                  <br></br>
+                <div key={reply._id} className='reply-container'>
+                  <div className='reply'>
+                    <span className='reply-name'>{reply.name}</span>-{' '}
+                    {reply.text}
+                  </div>
                 </div>
               ))}
               <div className='reply'>
-                <Form>
+                <Form data-test='reply-form'>
                   <Row>
                     <Col md={2}>
-                      <FormControl placeholder='Name'></FormControl>
+                      <FormControl
+                        placeholder='Name'
+                        name='name'
+                        value={name}
+                        onChange={this.onChangeHandler}
+                      ></FormControl>
                     </Col>
                     <Col md={8}>
-                      <FormControl placeholder='Reply'></FormControl>
+                      <FormControl
+                        placeholder='Reply'
+                        name='replyText'
+                        value={replyText}
+                        onChange={this.onChangeHandler}
+                      ></FormControl>
                     </Col>
                     <Col md={2}>
-                      <button className='btn-transparent'>Reply</button>
+                      <button
+                        className='btn-transparent'
+                        onClick={this.handleReplyToComment}
+                      >
+                        Reply
+                      </button>
                     </Col>
                   </Row>
                 </Form>

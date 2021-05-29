@@ -16,15 +16,50 @@ class Article extends Component {
     comments: []
   };
 
-  componentDidMount = async () => {
+  fetchArticle = async () => {
     let response = await axios.get(
       `${API_BASE_URL}/articles/${this.props.match.params?.articleId}`
     );
-    window.scrollTo(0, 0);
 
     this.setState({
       ...response.data
     });
+  };
+
+  componentDidMount = () => {
+    window.scrollTo(0, 0);
+    this.fetchArticle();
+  };
+
+  handleReplyToComment = async (commentId, replyObj) => {
+    let payload = {
+      articleId: this.props.match.params?.articleId,
+      commentId: commentId,
+      replyObj
+    };
+    console.log(payload);
+    let resp = await axios.post(
+      `${API_BASE_URL}/articles/comment/reply`,
+      payload
+    );
+
+    console.log(resp.data);
+    this.fetchArticle();
+  };
+
+  handleDeleteComment = async (commentId) => {
+    let payload = {
+      articleId: this.props.match.params?.articleId,
+      commentId
+    };
+    console.log('Called', payload);
+
+    let resp = await axios.delete(
+      `${API_BASE_URL}/articles/comment/delete`,
+      payload
+    );
+
+    console.log(resp.data);
   };
 
   render() {
@@ -33,7 +68,6 @@ class Article extends Component {
       articleSubtitle,
       articleContent,
       articleCategory,
-      author,
       createdOn,
       comments
     } = this.state;
@@ -111,6 +145,8 @@ class Article extends Component {
                       data-test='comments'
                       key={comment.id}
                       comment={comment}
+                      replyToComment={this.handleReplyToComment}
+                      deleteComment={this.handleDeleteComment}
                     ></Comments>
                   );
                 })
