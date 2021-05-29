@@ -6,7 +6,8 @@ import checkPropTypes from 'check-prop-types';
 
 const setUp = (initialState = {}) => {
   const store = storeFactory(initialState);
-  return shallow(<Landing store={store}></Landing>)
+
+  return shallow(<Landing store={store} handleNext={() => {}}></Landing>)
     .dive()
     .dive();
 };
@@ -41,12 +42,74 @@ describe('Landing page component', () => {
     let loader = findTestByAttr(wrapper, 'loader');
     expect(loader.length).toBe(0);
   });
+});
+
+describe('Landing loader', () => {
+  let wrapper;
+  beforeEach(() => {
+    const initialState = {
+      articles: {
+        articles: [],
+        loading: true
+      }
+    };
+    wrapper = setUp(initialState);
+  });
 
   it('should display loading if prop loading is true', () => {
-    let newWrapper = setUp({
-      loading: true
-    });
-    let loader = findTestByAttr(newWrapper, 'loader');
-    expect(loader.length).toBe(0);
+    let loader = findTestByAttr(wrapper, 'loader');
+    expect(loader.length).toBe(1);
+  });
+});
+
+describe('landing page next navigation', () => {
+  let wrapper;
+  beforeEach(() => {
+    const initialState = {
+      articles: {
+        articles: [],
+        next: {
+          page: 2
+        },
+        previous: undefined
+      }
+    };
+    wrapper = setUp(initialState);
+  });
+
+  it('should display next button', () => {
+    let nextBtn = findTestByAttr(wrapper, 'nextBtn');
+    expect(nextBtn.length).toBe(1);
+  });
+
+  it('should not display previous button', () => {
+    let prevBtn = findTestByAttr(wrapper, 'prevBtn');
+    expect(prevBtn.length).toBe(0);
+  });
+});
+
+describe('landing page prev navigation', () => {
+  let wrapper;
+  beforeEach(() => {
+    const initialState = {
+      articles: {
+        articles: [],
+        next: undefined,
+        previous: {
+          page: 1
+        }
+      }
+    };
+    wrapper = setUp(initialState);
+  });
+
+  it('should not display next button', () => {
+    let nextBtn = findTestByAttr(wrapper, 'nextBtn');
+    expect(nextBtn.length).toBe(0);
+  });
+
+  it('should display previous button', () => {
+    let prevBtn = findTestByAttr(wrapper, 'prevBtn');
+    expect(prevBtn.length).toBe(1);
   });
 });

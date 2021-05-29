@@ -1,82 +1,85 @@
-import {
-  faArrowAltCircleRight,
-  faArrowAltCircleLeft,
-  faSpinner
-} from '@fortawesome/free-solid-svg-icons';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { Component, createRef } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Container, Row, Col } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { fetchArticles } from '../../actions/articles/articlesActions';
 import ArticlesList from '../../components/ArticlesList/ArticleList';
+import Footer from '../../components/Footer/Footer';
 import Hero from '../../components/Hero/Hero';
 import './Landing.scss';
-import { fetchArticles } from '../../actions/articles/articlesActions';
-import Footer from '../../components/Footer/Footer';
 
-class Landing extends Component {
-  componentDidMount = () => {
-    this.props.fetchArticles(1);
-    window.scrollTo(0, 0);
+const Landing = (props) => {
+  // const getArticles = useCallback(() => props.fetchArticles(), []);
+
+  useEffect(() => {
+    const getArticles = () => props.fetchArticles();
+    getArticles();
+  }, []);
+
+  const handleNext = () => {
+    props.fetchArticles(props.next.page);
   };
 
-  render() {
-    const { articles, next, previous, fetchArticles, loading } = this.props;
-    return (
-      <div data-test='landing'>
-        <Hero></Hero>
-        <Container>
-          <Row style={{ height: '100%', padding: '20px' }}>
-            {!loading ? (
-              <ArticlesList articles={articles}></ArticlesList>
-            ) : (
-              <Col
-                md={12}
-                xs={12}
-                style={{ height: '750px' }}
-                data-test='loader'
-              >
-                <div className='loader-container spinner'>
-                  <FontAwesomeIcon
-                    color={'#a11692'}
-                    icon={faSpinner}
-                    size='2x'
-                  ></FontAwesomeIcon>
-                </div>
-              </Col>
-            )}
-          </Row>
-          <div className='pagination-buttons'>
-            {previous ? (
-              <FontAwesomeIcon
-                className='btn-icon'
-                color={'#a11692'}
-                icon={faArrowAltCircleLeft}
-                size='2x'
-                onClick={() => fetchArticles(previous.page)}
-              ></FontAwesomeIcon>
-            ) : (
-              <div></div>
-            )}
-            {next ? (
-              <FontAwesomeIcon
-                className='btn-icon'
-                color={'#a11692'}
-                icon={faArrowAltCircleRight}
-                size='2x'
-                onClick={() => fetchArticles(next.page)}
-              ></FontAwesomeIcon>
-            ) : (
-              <div></div>
-            )}
-          </div>
-        </Container>
+  const handlePrevious = () => {
+    props.fetchArticles(props.previous.page);
+  };
 
-        <Footer></Footer>
-      </div>
-    );
-  }
-}
+  return (
+    <div data-test='landing'>
+      <Hero></Hero>
+      <Container>
+        <Row className='landing-container-row'>
+          <Col md={12} sm={12}>
+            {props.loading ? (
+              <center>
+                <FontAwesomeIcon
+                  data-test='loader'
+                  icon={faSpinner}
+                  color={'#a11692'}
+                  size='3x'
+                  className='spinner'
+                />
+              </center>
+            ) : (
+              <ArticlesList articles={props.articles}></ArticlesList>
+            )}
+          </Col>
+
+          <Col md={12} sm={12}>
+            <div className='articles-navigation'>
+              <div className='articles-navigation-previous'>
+                {props.previous && (
+                  <button
+                    data-test='prevBtn'
+                    className='btn-navigation'
+                    onClick={handlePrevious}
+                  >
+                    Previous
+                  </button>
+                )}
+              </div>
+
+              <div className='articles-navigation-next'>
+                {props.next && (
+                  <button
+                    data-test='nextBtn'
+                    className='btn-navigation'
+                    onClick={handleNext}
+                  >
+                    Next
+                  </button>
+                )}
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+      <Footer></Footer>
+    </div>
+  );
+};
 
 Landing.propTypes = {
   articles: PropTypes.array.isRequired,
