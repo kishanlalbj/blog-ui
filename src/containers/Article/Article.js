@@ -24,7 +24,7 @@ class Article extends Component {
     commentText: ''
   };
 
-  componentDidMount = async () => {
+  fetchArticle = async () => {
     let response = await axios.get(
       `${API_BASE_URL}/articles/${this.props.match.params?.articleId}`
     );
@@ -38,7 +38,7 @@ class Article extends Component {
 
   clearCommentForm = () => {
     this.setState({
-      commentName: '',
+      commenterName: '',
       commentText: ''
     });
   };
@@ -46,15 +46,53 @@ class Article extends Component {
   onPostComment = async (e) => {
     e.preventDefault();
     let payload = {
+      id: this.props.match.params?.articleId,
       commenterName: this.state.commenterName,
       commentText: this.state.commentText
     };
 
     console.log(payload);
 
-    let resp = await axios.post(`${API_BASE_URL}/articles/comment`);
+    let resp = await axios.post(`${API_BASE_URL}/articles/comment`, payload);
     console.log(resp.data);
+    this.fetchArticle();
     this.clearCommentForm();
+  };
+
+  componentDidMount = () => {
+    window.scrollTo(0, 0);
+    this.fetchArticle();
+  };
+
+  handleReplyToComment = async (commentId, replyObj) => {
+    let payload = {
+      articleId: this.props.match.params?.articleId,
+      commentId: commentId,
+      replyObj
+    };
+    console.log(payload);
+    let resp = await axios.post(
+      `${API_BASE_URL}/articles/comment/reply`,
+      payload
+    );
+
+    console.log(resp.data);
+    this.fetchArticle();
+  };
+
+  handleDeleteComment = async (commentId) => {
+    let payload = {
+      articleId: this.props.match.params?.articleId,
+      commentId
+    };
+    console.log('Called', payload);
+
+    let resp = await axios.delete(
+      `${API_BASE_URL}/articles/comment/delete`,
+      payload
+    );
+
+    console.log(resp.data);
   };
 
   render() {
@@ -63,7 +101,6 @@ class Article extends Component {
       articleSubtitle,
       articleContent,
       articleCategory,
-      author,
       createdOn,
       comments,
       commenterName,
@@ -120,7 +157,6 @@ class Article extends Component {
                   color: '#b7b7b7'
                 }}
               >
-                {' '}
                 {moment(createdOn).format('LL')}{' '}
               </span>
             </span>
@@ -141,7 +177,7 @@ class Article extends Component {
                     type='text'
                     placeholder='Your Name'
                     width={250}
-                    name='commentName'
+                    name='commenterName'
                     value={commenterName}
                     onChange={this.onChangeHandler}
                   ></FormControl>
@@ -177,6 +213,8 @@ class Article extends Component {
                       data-test='comments'
                       key={comment.id}
                       comment={comment}
+                      replyToComment={this.handleReplyToComment}
+                      deleteComment={this.handleDeleteComment}
                     ></Comments>
                   );
                 })
