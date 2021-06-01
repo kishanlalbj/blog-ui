@@ -2,12 +2,14 @@ import axios from 'axios';
 import moment from 'moment';
 import React, { Component } from 'react';
 import {
+  Col,
   Container,
   Form,
   FormControl,
   FormGroup,
-  FormLabel
+  Row
 } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import Comments from '../../components/Comments/Comments';
 import Footer from '../../components/Footer/Footer';
 import { API_BASE_URL } from '../../constants';
@@ -20,7 +22,6 @@ class Article extends Component {
     author: '',
     createdOn: '',
     comments: [],
-    commenterName: '',
     commentText: ''
   };
 
@@ -38,8 +39,13 @@ class Article extends Component {
 
   clearCommentForm = () => {
     this.setState({
-      commenterName: '',
       commentText: ''
+    });
+  };
+
+  confirmDeleteFeedback = (feedback) => {
+    this.setState({
+      confirmDelete: feedback
     });
   };
 
@@ -47,7 +53,7 @@ class Article extends Component {
     e.preventDefault();
     let payload = {
       id: this.props.match.params?.articleId,
-      commenterName: this.state.commenterName,
+      commenterName: this.props.user?.name,
       commentText: this.state.commentText
     };
 
@@ -85,14 +91,14 @@ class Article extends Component {
       articleId: this.props.match.params?.articleId,
       commentId
     };
-    console.log('Called', payload);
 
-    let resp = await axios.delete(
-      `${API_BASE_URL}/articles/comment/delete`,
-      payload
-    );
+    let resp = await axios.delete(`${API_BASE_URL}/articles/comment/delete`, {
+      data: payload,
+      headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+    });
 
     console.log(resp.data);
+    this.fetchArticle();
   };
 
   render() {
@@ -103,8 +109,8 @@ class Article extends Component {
       articleCategory,
       createdOn,
       comments,
-      commenterName,
-      commentText
+      commentText,
+      confirmDeleteModal
     } = this.state;
 
     return (
@@ -157,7 +163,7 @@ class Article extends Component {
                   color: '#b7b7b7'
                 }}
               >
-                {moment(createdOn).format('LL')}{' '}
+                {moment(createdOn).format('LL')}
               </span>
             </span>
             <div
@@ -169,38 +175,42 @@ class Article extends Component {
           <hr></hr>
           <section>
             <h4>Comments</h4>
+            <br></br>
             <div>
               <Form>
-                <FormGroup>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl
-                    type='text'
-                    placeholder='Your Name'
-                    width={250}
-                    name='commenterName'
-                    value={commenterName}
-                    onChange={this.onChangeHandler}
-                  ></FormControl>
-                </FormGroup>
-
-                <FormGroup>
-                  <FormLabel>Comment</FormLabel>
-                  <FormControl
-                    as='textarea'
-                    cols={4}
-                    rows={5}
-                    name='commentText'
-                    value={commentText}
-                    onChange={this.onChangeHandler}
-                    placeholder='Your Comment'
-                  ></FormControl>
-                </FormGroup>
-
-                <FormGroup>
-                  <button className='btn-custom' onClick={this.onPostComment}>
-                    Comment
-                  </button>
-                </FormGroup>
+                <Row>
+                  <Col md={{ span: 1 }}>
+                    <img
+                      src={this.props.user?.avatar}
+                      style={{ borderRadius: '99px' }}
+                      alt='avatar'
+                      width='50'
+                      height='50'
+                      title={this.props.user?.name}
+                    ></img>
+                  </Col>
+                  <Col md={{ span: 11, offset: 0 }}>
+                    <FormGroup>
+                      <FormControl
+                        as='textarea'
+                        cols={4}
+                        rows={5}
+                        name='commentText'
+                        value={commentText}
+                        onChange={this.onChangeHandler}
+                        placeholder='Your Comment'
+                      ></FormControl>
+                    </FormGroup>
+                    <FormGroup>
+                      <button
+                        className='btn-custom'
+                        onClick={this.onPostComment}
+                      >
+                        Comment
+                      </button>
+                    </FormGroup>
+                  </Col>
+                </Row>
               </Form>
             </div>
 
@@ -211,10 +221,12 @@ class Article extends Component {
                   return (
                     <Comments
                       data-test='comments'
-                      key={comment.id}
+                      key={comment._id}
                       comment={comment}
                       replyToComment={this.handleReplyToComment}
                       deleteComment={this.handleDeleteComment}
+                      user={this.props.user}
+                      isAdmin={this.props.user?.role === 'admin' ? true : false}
                     ></Comments>
                   );
                 })
@@ -229,4 +241,7 @@ class Article extends Component {
   }
 }
 
-export default Article;
+const mapStateToProps = (state) => ({
+  user: state.auth.user
+});
+export default connect(mapStateToProps, null)(Article);

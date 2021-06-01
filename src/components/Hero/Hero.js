@@ -5,11 +5,16 @@ import {
   faFacebook,
   faTwitter
 } from '@fortawesome/free-brands-svg-icons';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import './Hero.scss';
 import { Container } from 'react-bootstrap';
+import GoogleLogin from 'react-google-login';
 
-const Hero = () => {
+const Hero = (props) => {
+  const handleGoogleResponse = async (resp) => {
+    console.log(props);
+    props.onLogin(resp.tokenId);
+  };
+
   return (
     <div data-test='hero-page' className='hero-container'>
       <Container
@@ -28,7 +33,26 @@ const Hero = () => {
             float: 'right'
           }}
         >
-          <FontAwesomeIcon icon={faUserCircle} size='lg'></FontAwesomeIcon>
+          {!props.isAuthenticated ? (
+            <GoogleLogin
+              clientId={process.env.REACT_APP_CLIENT_ID}
+              onSuccess={handleGoogleResponse}
+              onFailure={handleGoogleResponse}
+              buttonText='Login'
+              cookiePolicy='single_host_origin'
+            ></GoogleLogin>
+          ) : (
+            <div>
+              {/* <span className='hero-nav-item'>Admin</span> */}
+              <img
+                src={props.user.avatar}
+                width='40'
+                height='40'
+                style={{ borderRadius: '999px' }}
+                alt='avatar'
+              ></img>
+            </div>
+          )}
         </div>
       </Container>
       <div className='logo-box' data-test='hero-logo-box'>
@@ -50,10 +74,6 @@ const Hero = () => {
         <br></br>
         <br></br>
       </div>
-
-      {/* <div className='hero-image'>
-        <img src={book} alt='books' className='hero-image-svg'></img>
-      </div> */}
 
       <div className='custom-shape-divider-bottom-1613237233'>
         <svg

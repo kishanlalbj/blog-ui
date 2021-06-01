@@ -1,5 +1,6 @@
 import React from 'react';
-import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
+import { Navbar, Nav, NavDropdown, Container, NavItem } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
@@ -13,6 +14,10 @@ const Header = () => {
             id='responsive-navbar-nav'
           >
             <Nav>
+              <Nav.Link as={Link} to='/'>
+                Home
+              </Nav.Link>
+
               <NavDropdown
                 alignRight
                 title='Profile'
