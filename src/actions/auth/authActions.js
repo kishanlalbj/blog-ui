@@ -25,8 +25,8 @@ export const setCurrentUser = (decoded) => {
 
 //logout user
 export const logoutUser = (history) => (dispatch) => {
+  console.log('Hello');
   localStorage.removeItem('jwtToken');
-  // console.log("TOKEN REMOVED ", localStorage.getItem("jwtToken"));
   // history.push("/");
   window.location.href = '/';
 

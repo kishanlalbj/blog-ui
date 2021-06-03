@@ -8,12 +8,11 @@ import { fetchArticles } from '../../actions/articles/articlesActions';
 import ArticlesList from '../../components/ArticlesList/ArticleList';
 import Footer from '../../components/Footer/Footer';
 import Hero from '../../components/Hero/Hero';
-import { googleLogin } from '../../actions/auth/authActions';
+import { googleLogin, logoutUser } from '../../actions/auth/authActions';
 import './Landing.scss';
 
 const Landing = (props) => {
   useEffect(() => {
-    console.log('--------------');
     const getArticles = () => props.fetchArticles();
     getArticles();
   }, []);
@@ -30,10 +29,15 @@ const Landing = (props) => {
     props.handleGoogleLogin(tokenId);
   };
 
+  const logoutHandler = () => {
+    props.logout();
+  };
+
   return (
     <div data-test='landing'>
       <Hero
         onLogin={loginHandler}
+        onLogout={logoutHandler}
         isAuthenticated={props.isAuthenticated}
         user={props.user}
       ></Hero>
@@ -106,7 +110,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchArticles: (page) => dispatch(fetchArticles(page)),
-  handleGoogleLogin: (tokenId) => dispatch(googleLogin(tokenId))
+  handleGoogleLogin: (tokenId) => dispatch(googleLogin(tokenId)),
+  logout: () => dispatch(logoutUser())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Landing);

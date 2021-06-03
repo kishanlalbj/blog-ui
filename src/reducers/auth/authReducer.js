@@ -8,7 +8,6 @@ const INITIAL_STATE = {
 const authReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case types.LOGIN_SUCCESS:
-      console.log(action.payload);
       return {
         ...state,
         isAuthenticated: true,

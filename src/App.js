@@ -7,13 +7,10 @@ import { checkAuth, getUserFromToken } from './utils/checkAuth';
 import { connect } from 'react-redux';
 import { types } from './actions/types';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import { useLocation } from 'react-router-dom';
 
 function App(props) {
   let isAuth = checkAuth();
   let history = useHistory();
-
-  console.log('adasd asdasdasd', history);
 
   if (isAuth) {
     const user = getUserFromToken();
@@ -21,7 +18,8 @@ function App(props) {
     if (user.role === 'admin') history.push(history.location.pathname);
     else history.push(history.location.pathname);
   } else {
-    history.push('/');
+    if (history.location.pathname !== '/admin')
+      history.push(history.location.pathname);
   }
 
   return (

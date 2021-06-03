@@ -37,7 +37,6 @@ class Comments extends Component {
       });
       this.clearReplyForm();
     } catch (e) {
-      console.log(e);
       this.setState({ error: 'Error replying to comment' });
     }
   };
@@ -47,7 +46,7 @@ class Comments extends Component {
   };
 
   render() {
-    const { comment, isAdmin, user } = this.props;
+    const { comment, isAdmin, user, isAuthenticated } = this.props;
     const { isOpen, confirmModal, replyText } = this.state;
 
     return (
@@ -88,7 +87,6 @@ class Comments extends Component {
 
           {isOpen ? (
             <div data-test='reply'>
-              {console.log(comment.replies)}
               {comment.replies.map((reply) => (
                 <div key={reply._id} className='reply-container'>
                   <div className='reply'>
@@ -98,36 +96,38 @@ class Comments extends Component {
                 </div>
               ))}
               <div className='reply'>
-                <Form data-test='reply-form'>
-                  <Row>
-                    <Col md={{ span: 1 }}>
-                      <img
-                        src={user?.avatar}
-                        style={{ borderRadius: '99px' }}
-                        width='30'
-                        height='30'
-                        title={user?.name}
-                        alt='avatar'
-                      ></img>
-                    </Col>
-                    <Col md={8}>
-                      <FormControl
-                        placeholder='Reply'
-                        name='replyText'
-                        value={replyText}
-                        onChange={this.onChangeHandler}
-                      ></FormControl>
-                    </Col>
-                    <Col md={2}>
-                      <button
-                        className='btn-transparent'
-                        onClick={this.handleReplyToComment}
-                      >
-                        Reply
-                      </button>
-                    </Col>
-                  </Row>
-                </Form>
+                {isAuthenticated ? (
+                  <Form data-test='reply-form'>
+                    <Row>
+                      <Col md={{ span: 1 }}>
+                        <img
+                          src={user?.avatar}
+                          style={{ borderRadius: '99px' }}
+                          width='30'
+                          height='30'
+                          title={user?.name}
+                          alt='avatar'
+                        ></img>
+                      </Col>
+                      <Col md={8}>
+                        <FormControl
+                          placeholder='Reply'
+                          name='replyText'
+                          value={replyText}
+                          onChange={this.onChangeHandler}
+                        ></FormControl>
+                      </Col>
+                      <Col md={2}>
+                        <button
+                          className='btn-transparent'
+                          onClick={this.handleReplyToComment}
+                        >
+                          Reply
+                        </button>
+                      </Col>
+                    </Row>
+                  </Form>
+                ) : null}
               </div>
             </div>
           ) : null}

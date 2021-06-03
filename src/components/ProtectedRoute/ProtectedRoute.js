@@ -16,7 +16,6 @@ const ProtectedRoute = ({
       <Route
         {...rest}
         render={(props) => {
-          console.log('CHecking Auth in Route');
           let auth = checkAuth();
 
           if (!auth) {

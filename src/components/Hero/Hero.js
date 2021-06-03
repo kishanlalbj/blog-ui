@@ -6,12 +6,12 @@ import {
   faTwitter
 } from '@fortawesome/free-brands-svg-icons';
 import './Hero.scss';
-import { Container } from 'react-bootstrap';
+import { Container, NavDropdown } from 'react-bootstrap';
 import GoogleLogin from 'react-google-login';
+import { Link } from 'react-router-dom';
 
 const Hero = (props) => {
   const handleGoogleResponse = async (resp) => {
-    console.log(props);
     props.onLogin(resp.tokenId);
   };
 
@@ -43,14 +43,34 @@ const Hero = (props) => {
             ></GoogleLogin>
           ) : (
             <div>
-              {/* <span className='hero-nav-item'>Admin</span> */}
-              <img
-                src={props.user.avatar}
-                width='40'
-                height='40'
-                style={{ borderRadius: '999px' }}
-                alt='avatar'
-              ></img>
+              <NavDropdown
+                alignRight
+                title={
+                  <img
+                    src={props.user?.avatar}
+                    width='30'
+                    height='30'
+                    style={{ borderRadius: '99px' }}
+                    alt='avatar'
+                  ></img>
+                }
+                id='collasible-nav-dropdown'
+              >
+                {props.user.role === 'admin' ? (
+                  <>
+                    <NavDropdown.Item as={Link} to='/admin'>
+                      Dashbord
+                    </NavDropdown.Item>
+
+                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                    <NavDropdown.Item>Drafts</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                  </>
+                ) : null}
+                <NavDropdown.Item onClick={props.onLogout}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
             </div>
           )}
         </div>

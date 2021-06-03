@@ -8,6 +8,7 @@ describe('Comments Component', () => {
   let wrapper;
   beforeEach(() => {
     wrapper = setUp({
+      isAuthenticated: true,
       comment: {
         commenterName: 'Kishan',
         commentText: 'New Commenter',

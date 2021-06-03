@@ -7,13 +7,16 @@ import {
   Form,
   FormControl,
   FormGroup,
-  Row
+  Row,
+  NavDropdown
 } from 'react-bootstrap';
+import GoogleLogin from 'react-google-login';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { googleLogin, logoutUser } from '../../actions/auth/authActions';
 import Comments from '../../components/Comments/Comments';
 import Footer from '../../components/Footer/Footer';
 import { API_BASE_URL } from '../../constants';
-
 class Article extends Component {
   state = {
     articleTitle: '',
@@ -57,10 +60,7 @@ class Article extends Component {
       commentText: this.state.commentText
     };
 
-    console.log(payload);
-
-    let resp = await axios.post(`${API_BASE_URL}/articles/comment`, payload);
-    console.log(resp.data);
+    await axios.post(`${API_BASE_URL}/articles/comment`, payload);
     this.fetchArticle();
     this.clearCommentForm();
   };
@@ -76,13 +76,8 @@ class Article extends Component {
       commentId: commentId,
       replyObj
     };
-    console.log(payload);
-    let resp = await axios.post(
-      `${API_BASE_URL}/articles/comment/reply`,
-      payload
-    );
+    await axios.post(`${API_BASE_URL}/articles/comment/reply`, payload);
 
-    console.log(resp.data);
     this.fetchArticle();
   };
 
@@ -92,13 +87,20 @@ class Article extends Component {
       commentId
     };
 
-    let resp = await axios.delete(`${API_BASE_URL}/articles/comment/delete`, {
+    await axios.delete(`${API_BASE_URL}/articles/comment/delete`, {
       data: payload,
       headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
     });
 
-    console.log(resp.data);
     this.fetchArticle();
+  };
+
+  handleGoogleResponse = (resp) => {
+    this.props.handleGoogleLogin(resp.tokenId);
+  };
+
+  onLogout = () => {
+    this.props.logout();
   };
 
   render() {
@@ -109,14 +111,73 @@ class Article extends Component {
       articleCategory,
       createdOn,
       comments,
-      commentText,
-      confirmDeleteModal
+      commentText
     } = this.state;
+
+    const { isAuthenticated, user } = this.props;
 
     return (
       <div data-test='article-component'>
         <section>
           <div className='hero-container'>
+            <Container
+              style={{
+                padding: '20px'
+              }}
+            >
+              <div
+                style={{
+                  float: 'left'
+                }}
+              ></div>
+
+              <div
+                style={{
+                  float: 'right'
+                }}
+              >
+                {!this.props.isAuthenticated ? (
+                  <GoogleLogin
+                    clientId={process.env.REACT_APP_CLIENT_ID}
+                    onSuccess={this.handleGoogleResponse}
+                    onFailure={this.handleGoogleResponse}
+                    buttonText='Login'
+                    cookiePolicy='single_host_origin'
+                  ></GoogleLogin>
+                ) : (
+                  <div>
+                    <NavDropdown
+                      alignRight
+                      title={
+                        <img
+                          src={this.props.user?.avatar}
+                          width='30'
+                          height='30'
+                          style={{ borderRadius: '99px' }}
+                          alt='avatar'
+                        ></img>
+                      }
+                      id='collasible-nav-dropdown'
+                    >
+                      {this.props.user.role === 'admin' ? (
+                        <>
+                          <NavDropdown.Item as={Link} to='/admin'>
+                            Dashbord
+                          </NavDropdown.Item>
+
+                          <NavDropdown.Item>Profile</NavDropdown.Item>
+                          <NavDropdown.Item>Drafts</NavDropdown.Item>
+                          <NavDropdown.Divider />
+                        </>
+                      ) : null}
+                      <NavDropdown.Item onClick={this.onLogout}>
+                        Logout
+                      </NavDropdown.Item>
+                    </NavDropdown>
+                  </div>
+                )}
+              </div>
+            </Container>
             <div className='logo-box'>
               <h1 data-test='article-title'>{articleTitle}</h1>
               <h4 data-test='article-subtitle'>{articleSubtitle}</h4>
@@ -177,44 +238,47 @@ class Article extends Component {
             <h4>Comments</h4>
             <br></br>
             <div>
-              <Form>
-                <Row>
-                  <Col md={{ span: 1 }}>
-                    <img
-                      src={this.props.user?.avatar}
-                      style={{ borderRadius: '99px' }}
-                      alt='avatar'
-                      width='50'
-                      height='50'
-                      title={this.props.user?.name}
-                    ></img>
-                  </Col>
-                  <Col md={{ span: 11, offset: 0 }}>
-                    <FormGroup>
-                      <FormControl
-                        as='textarea'
-                        cols={4}
-                        rows={5}
-                        name='commentText'
-                        value={commentText}
-                        onChange={this.onChangeHandler}
-                        placeholder='Your Comment'
-                      ></FormControl>
-                    </FormGroup>
-                    <FormGroup>
-                      <button
-                        className='btn-custom'
-                        onClick={this.onPostComment}
-                      >
-                        Comment
-                      </button>
-                    </FormGroup>
-                  </Col>
-                </Row>
-              </Form>
+              {isAuthenticated ? (
+                <Form>
+                  <Row>
+                    <Col md={{ span: 1 }}>
+                      <img
+                        src={user?.avatar}
+                        style={{ borderRadius: '99px' }}
+                        alt='avatar'
+                        width='50'
+                        height='50'
+                        title={user?.name}
+                      ></img>
+                    </Col>
+                    <Col md={{ span: 11, offset: 0 }}>
+                      <FormGroup>
+                        <FormControl
+                          as='textarea'
+                          cols={4}
+                          rows={5}
+                          name='commentText'
+                          value={commentText}
+                          onChange={this.onChangeHandler}
+                          placeholder='Your Comment'
+                        ></FormControl>
+                      </FormGroup>
+                      <FormGroup>
+                        <button
+                          className='btn-custom'
+                          onClick={this.onPostComment}
+                        >
+                          Comment
+                        </button>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </Form>
+              ) : (
+                <p>Please login to comment</p>
+              )}
             </div>
-
-            {comments.length === 0 ? <p>No Comments</p> : null}
+            {comments.length === 0 ? <p>No Comments yet</p> : null}
 
             {comments.length > 0
               ? comments.map((comment) => {
@@ -225,8 +289,9 @@ class Article extends Component {
                       comment={comment}
                       replyToComment={this.handleReplyToComment}
                       deleteComment={this.handleDeleteComment}
-                      user={this.props.user}
-                      isAdmin={this.props.user?.role === 'admin' ? true : false}
+                      user={user}
+                      isAdmin={user?.role === 'admin' ? true : false}
+                      isAuthenticated={isAuthenticated}
                     ></Comments>
                   );
                 })
@@ -242,6 +307,13 @@ class Article extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.auth.user
+  user: state.auth.user,
+  isAuthenticated: state.auth.isAuthenticated
 });
-export default connect(mapStateToProps, null)(Article);
+
+const mapDispatchToProps = (dispatch) => ({
+  handleGoogleLogin: (tokenId) => dispatch(googleLogin(tokenId)),
+  logout: () => dispatch(logoutUser())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Article);
