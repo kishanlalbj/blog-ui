@@ -5,11 +5,16 @@ import {
   faFacebook,
   faTwitter
 } from '@fortawesome/free-brands-svg-icons';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import './Hero.scss';
-import { Container } from 'react-bootstrap';
+import { Container, NavDropdown } from 'react-bootstrap';
+import GoogleLogin from 'react-google-login';
+import { Link } from 'react-router-dom';
 
-const Hero = () => {
+const Hero = (props) => {
+  const handleGoogleResponse = async (resp) => {
+    props.onLogin(resp.tokenId);
+  };
+
   return (
     <div data-test='hero-page' className='hero-container'>
       <Container
@@ -28,7 +33,46 @@ const Hero = () => {
             float: 'right'
           }}
         >
-          <FontAwesomeIcon icon={faUserCircle} size='lg'></FontAwesomeIcon>
+          {!props.isAuthenticated ? (
+            <GoogleLogin
+              clientId={process.env.REACT_APP_CLIENT_ID}
+              onSuccess={handleGoogleResponse}
+              onFailure={handleGoogleResponse}
+              buttonText='Login'
+              cookiePolicy='single_host_origin'
+            ></GoogleLogin>
+          ) : (
+            <div>
+              <NavDropdown
+                alignRight
+                title={
+                  <img
+                    src={props.user?.avatar}
+                    width='30'
+                    height='30'
+                    style={{ borderRadius: '99px' }}
+                    alt='avatar'
+                  ></img>
+                }
+                id='collasible-nav-dropdown'
+              >
+                {props.user.role === 'admin' ? (
+                  <>
+                    <NavDropdown.Item as={Link} to='/admin'>
+                      Dashbord
+                    </NavDropdown.Item>
+
+                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                    <NavDropdown.Item>Drafts</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                  </>
+                ) : null}
+                <NavDropdown.Item onClick={props.onLogout}>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            </div>
+          )}
         </div>
       </Container>
       <div className='logo-box' data-test='hero-logo-box'>
@@ -50,10 +94,6 @@ const Hero = () => {
         <br></br>
         <br></br>
       </div>
-
-      {/* <div className='hero-image'>
-        <img src={book} alt='books' className='hero-image-svg'></img>
-      </div> */}
 
       <div className='custom-shape-divider-bottom-1613237233'>
         <svg
