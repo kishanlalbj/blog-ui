@@ -1,8 +1,14 @@
 import { shallow } from 'enzyme';
-import { findTestByAttr } from '../../../utils';
+import { findTestByAttr, storeFactory } from '../../../utils';
 import Article from './Article';
 
-const setUp = (props = {}) => shallow(<Article {...props}></Article>);
+const setUp = (initialState = {}) => {
+  const store = storeFactory(initialState);
+
+  return shallow(<Article store={store}></Article>)
+    .dive()
+    .dive();
+};
 
 describe('Article Component', () => {
   let wrapper;

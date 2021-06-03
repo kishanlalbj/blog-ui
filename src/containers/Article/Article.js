@@ -2,16 +2,21 @@ import axios from 'axios';
 import moment from 'moment';
 import React, { Component } from 'react';
 import {
+  Col,
   Container,
   Form,
   FormControl,
   FormGroup,
-  FormLabel
+  Row,
+  NavDropdown
 } from 'react-bootstrap';
+import GoogleLogin from 'react-google-login';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { googleLogin, logoutUser } from '../../actions/auth/authActions';
 import Comments from '../../components/Comments/Comments';
 import Footer from '../../components/Footer/Footer';
 import { API_BASE_URL } from '../../constants';
-
 class Article extends Component {
   state = {
     articleTitle: '',
@@ -20,7 +25,6 @@ class Article extends Component {
     author: '',
     createdOn: '',
     comments: [],
-    commenterName: '',
     commentText: ''
   };
 
@@ -38,8 +42,13 @@ class Article extends Component {
 
   clearCommentForm = () => {
     this.setState({
-      commenterName: '',
       commentText: ''
+    });
+  };
+
+  confirmDeleteFeedback = (feedback) => {
+    this.setState({
+      confirmDelete: feedback
     });
   };
 
@@ -47,14 +56,11 @@ class Article extends Component {
     e.preventDefault();
     let payload = {
       id: this.props.match.params?.articleId,
-      commenterName: this.state.commenterName,
+      commenterName: this.props.user?.name,
       commentText: this.state.commentText
     };
 
-    console.log(payload);
-
-    let resp = await axios.post(`${API_BASE_URL}/articles/comment`, payload);
-    console.log(resp.data);
+    await axios.post(`${API_BASE_URL}/articles/comment`, payload);
     this.fetchArticle();
     this.clearCommentForm();
   };
@@ -70,13 +76,8 @@ class Article extends Component {
       commentId: commentId,
       replyObj
     };
-    console.log(payload);
-    let resp = await axios.post(
-      `${API_BASE_URL}/articles/comment/reply`,
-      payload
-    );
+    await axios.post(`${API_BASE_URL}/articles/comment/reply`, payload);
 
-    console.log(resp.data);
     this.fetchArticle();
   };
 
@@ -85,14 +86,21 @@ class Article extends Component {
       articleId: this.props.match.params?.articleId,
       commentId
     };
-    console.log('Called', payload);
 
-    let resp = await axios.delete(
-      `${API_BASE_URL}/articles/comment/delete`,
-      payload
-    );
+    await axios.delete(`${API_BASE_URL}/articles/comment/delete`, {
+      data: payload,
+      headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` }
+    });
 
-    console.log(resp.data);
+    this.fetchArticle();
+  };
+
+  handleGoogleResponse = (resp) => {
+    this.props.handleGoogleLogin(resp.tokenId);
+  };
+
+  onLogout = () => {
+    this.props.logout();
   };
 
   render() {
@@ -103,14 +111,73 @@ class Article extends Component {
       articleCategory,
       createdOn,
       comments,
-      commenterName,
       commentText
     } = this.state;
+
+    const { isAuthenticated, user } = this.props;
 
     return (
       <div data-test='article-component'>
         <section>
           <div className='hero-container'>
+            <Container
+              style={{
+                padding: '20px'
+              }}
+            >
+              <div
+                style={{
+                  float: 'left'
+                }}
+              ></div>
+
+              <div
+                style={{
+                  float: 'right'
+                }}
+              >
+                {!this.props.isAuthenticated ? (
+                  <GoogleLogin
+                    clientId={process.env.REACT_APP_CLIENT_ID}
+                    onSuccess={this.handleGoogleResponse}
+                    onFailure={this.handleGoogleResponse}
+                    buttonText='Login'
+                    cookiePolicy='single_host_origin'
+                  ></GoogleLogin>
+                ) : (
+                  <div>
+                    <NavDropdown
+                      alignRight
+                      title={
+                        <img
+                          src={this.props.user?.avatar}
+                          width='30'
+                          height='30'
+                          style={{ borderRadius: '99px' }}
+                          alt='avatar'
+                        ></img>
+                      }
+                      id='collasible-nav-dropdown'
+                    >
+                      {this.props.user.role === 'admin' ? (
+                        <>
+                          <NavDropdown.Item as={Link} to='/admin'>
+                            Dashbord
+                          </NavDropdown.Item>
+
+                          <NavDropdown.Item>Profile</NavDropdown.Item>
+                          <NavDropdown.Item>Drafts</NavDropdown.Item>
+                          <NavDropdown.Divider />
+                        </>
+                      ) : null}
+                      <NavDropdown.Item onClick={this.onLogout}>
+                        Logout
+                      </NavDropdown.Item>
+                    </NavDropdown>
+                  </div>
+                )}
+              </div>
+            </Container>
             <div className='logo-box'>
               <h1 data-test='article-title'>{articleTitle}</h1>
               <h4 data-test='article-subtitle'>{articleSubtitle}</h4>
@@ -157,7 +224,7 @@ class Article extends Component {
                   color: '#b7b7b7'
                 }}
               >
-                {moment(createdOn).format('LL')}{' '}
+                {moment(createdOn).format('LL')}
               </span>
             </span>
             <div
@@ -169,52 +236,62 @@ class Article extends Component {
           <hr></hr>
           <section>
             <h4>Comments</h4>
+            <br></br>
             <div>
-              <Form>
-                <FormGroup>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl
-                    type='text'
-                    placeholder='Your Name'
-                    width={250}
-                    name='commenterName'
-                    value={commenterName}
-                    onChange={this.onChangeHandler}
-                  ></FormControl>
-                </FormGroup>
-
-                <FormGroup>
-                  <FormLabel>Comment</FormLabel>
-                  <FormControl
-                    as='textarea'
-                    cols={4}
-                    rows={5}
-                    name='commentText'
-                    value={commentText}
-                    onChange={this.onChangeHandler}
-                    placeholder='Your Comment'
-                  ></FormControl>
-                </FormGroup>
-
-                <FormGroup>
-                  <button className='btn-custom' onClick={this.onPostComment}>
-                    Comment
-                  </button>
-                </FormGroup>
-              </Form>
+              {isAuthenticated ? (
+                <Form>
+                  <Row>
+                    <Col md={{ span: 1 }}>
+                      <img
+                        src={user?.avatar}
+                        style={{ borderRadius: '99px' }}
+                        alt='avatar'
+                        width='50'
+                        height='50'
+                        title={user?.name}
+                      ></img>
+                    </Col>
+                    <Col md={{ span: 11, offset: 0 }}>
+                      <FormGroup>
+                        <FormControl
+                          as='textarea'
+                          cols={4}
+                          rows={5}
+                          name='commentText'
+                          value={commentText}
+                          onChange={this.onChangeHandler}
+                          placeholder='Your Comment'
+                        ></FormControl>
+                      </FormGroup>
+                      <FormGroup>
+                        <button
+                          className='btn-custom'
+                          onClick={this.onPostComment}
+                        >
+                          Comment
+                        </button>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </Form>
+              ) : (
+                <p>Please login to comment</p>
+              )}
             </div>
-
-            {comments.length === 0 ? <p>No Comments</p> : null}
+            {comments.length === 0 ? <p>No Comments yet</p> : null}
 
             {comments.length > 0
               ? comments.map((comment) => {
                   return (
                     <Comments
                       data-test='comments'
-                      key={comment.id}
+                      key={comment._id}
                       comment={comment}
                       replyToComment={this.handleReplyToComment}
                       deleteComment={this.handleDeleteComment}
+                      user={user}
+                      isAdmin={user?.role === 'admin' ? true : false}
+                      isAuthenticated={isAuthenticated}
                     ></Comments>
                   );
                 })
@@ -229,4 +306,14 @@ class Article extends Component {
   }
 }
 
-export default Article;
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  handleGoogleLogin: (tokenId) => dispatch(googleLogin(tokenId)),
+  logout: () => dispatch(logoutUser())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Article);
