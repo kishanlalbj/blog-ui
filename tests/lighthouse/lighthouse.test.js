@@ -1,6 +1,7 @@
 const fs = require('fs');
 const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
+const config = require('./lighthouse.config');
 
 describe('Lighthouse Test', () => {
   let result;
@@ -9,13 +10,20 @@ describe('Lighthouse Test', () => {
     const options = {
       logLevel: 'info',
       output: 'json',
-      // onlyCategories: ['performance', 'best', 'accessibility', 'seo'],
-      port: chrome.port
+      port: chrome.port,
+      formFactor: 'mobile',
+      throttlingMethod: 'provided',
+      connection: 'threegfast'
     };
-    const runnerResult = await lighthouse('http://localhost:3000', options);
+    const runnerResult = await lighthouse(
+      'http://localhost:3000',
+      options,
+      config
+    );
 
     // `.report` is the HTML report as a string
-    const reportJson = runnerResult.report;
+    const reportHTML = runnerResult.report;
+    fs.writeFileSync('lhreport.html', reportHTML);
     fs.writeFileSync('lhreport.json', JSON.stringify(runnerResult.lhr));
 
     // `.lhr` is the Lighthouse Result as a JS object

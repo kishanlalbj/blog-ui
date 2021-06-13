@@ -24,6 +24,8 @@
   text-decoration: none;
   min-width: 100px;
   max-width: 100%;
+  text-align: center;
+  cursor: pointer;
   &:hover {
     background: #fff;
     border: 1px solid $primaryColor;
@@ -58,6 +60,15 @@
 
 .article-chip {
   @include makeChip($secondaryColor, $color);
+}
+
+.search-input {
+  width: 300px;
+  border: none;
+  border-bottom: 1px solid;
+  &:focus {
+    outline: none;
+  }
 }
 
 .btn-icon {

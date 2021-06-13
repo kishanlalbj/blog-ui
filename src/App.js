@@ -7,6 +7,7 @@ import { checkAuth, getUserFromToken } from './utils/checkAuth';
 import { connect } from 'react-redux';
 import { types } from './actions/types';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import ArticleBuilder from './containers/ArticleBuilder/ArticleBuilder';
 
 function App(props) {
   let isAuth = checkAuth();
@@ -28,6 +29,11 @@ function App(props) {
         <Route exact path='/' component={Landing}></Route>
         <Route exact path='/article/:articleId' component={Article}></Route>
         <ProtectedRoute exact path='/admin' component={Admin}></ProtectedRoute>
+        <ProtectedRoute
+          exact
+          path='/admin/article/new'
+          component={ArticleBuilder}
+        ></ProtectedRoute>
       </Switch>
     </div>
   );
