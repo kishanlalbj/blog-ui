@@ -2,6 +2,7 @@ const fs = require('fs');
 const lighthouse = require('lighthouse');
 const chromeLauncher = require('chrome-launcher');
 const config = require('./lighthouse.config');
+const APP_URL = process.env.APP_URL || 'http://localhost:3000';
 
 describe('Lighthouse Test', () => {
   let result;
@@ -15,11 +16,7 @@ describe('Lighthouse Test', () => {
       throttlingMethod: 'provided',
       connection: 'threegfast'
     };
-    const runnerResult = await lighthouse(
-      'http://localhost:3000',
-      options,
-      config
-    );
+    const runnerResult = await lighthouse(APP_URL, options, config);
 
     // `.report` is the HTML report as a string
     const reportHTML = runnerResult.report;
