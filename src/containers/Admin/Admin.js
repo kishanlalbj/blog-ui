@@ -47,7 +47,7 @@ const Admin = (props) => {
   }, []);
 
   return (
-    <div>
+    <div data-test='admin-component'>
       <Header user={user} onLogout={logout}></Header>
 
       <Container className='admin-container'>
