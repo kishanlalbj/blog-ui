@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+* {
+  font-family: 'Roboto', 'sans-serif';
+}
+
+/* ------------------------ */
+/* small phones to small tablets 481px to 767px */
+/* ------------------------ */
+@media only screen and (max-width: 767px) {
+  .hero-image {
+    display: none;
+  }
+}
+
+/* ------------------------ */
+/* small phones 0 to 480px */
+/* ------------------------ */
+@media only screen and (max-width: 425px) {
+  .custom-shape-divider-bottom-1613237233 svg {
+    width: calc(170% + 1.3px);
+  }
+}

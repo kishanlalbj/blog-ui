@@ -1,40 +1,43 @@
 import React from 'react';
-import ArticleCard from '../ArticleCard/ArticleCard';
-import { Col, Row } from 'react-bootstrap';
+import { Grid } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import NewArticleCard from '../NewArticleCard/NewArticleCard';
 
 const ArticleList = (props) => {
   const { articles } = props;
   return (
     <React.Fragment>
-      <Row>
+      <Grid container spacing={4}>
         {articles.length > 0 ? (
-          articles.map((article, index) => (
-            <Col
+          articles.map((article) => (
+            <Grid
+              item
               md={6}
               xs={12}
-              sm={12}
               key={article._id}
               data-test='article-list'
+              style={{ height: 'auto' }}
             >
-              <ArticleCard
+              <NewArticleCard
                 articleId={article._id}
                 articleTitle={article.articleTitle}
                 articleSubtitle={article.articleSubtitle}
                 articleContent={article.articleContent}
                 createdOn={article.createdOn}
                 articleCategory={article.articleCategory}
-              ></ArticleCard>
-            </Col>
+                onReadMore={props.goToArticle}
+                totalComments={article.comments.length}
+              ></NewArticleCard>
+            </Grid>
           ))
         ) : (
-          <Col md={12} sm={12}>
+          <Grid item md={12} xs={12}>
             <center data-test='article-list-no-items'>
               <p>No Articles found</p>
             </center>
-          </Col>
+          </Grid>
         )}
-      </Row>
+      </Grid>
     </React.Fragment>
   );
 };

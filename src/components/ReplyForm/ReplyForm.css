@@ -1,0 +1,8 @@
+.reply-form-container {
+  margin-top: 25px;
+  display: flex;
+}
+
+.reply-avatar {
+  padding: 0px 15px 0px 0px;
+}

@@ -5,14 +5,30 @@ import {
   faFacebook,
   faTwitter
 } from '@fortawesome/free-brands-svg-icons';
-import './Hero.scss';
-import { Container, NavDropdown } from 'react-bootstrap';
+import './Hero.css';
+import { Container } from 'react-bootstrap';
 import GoogleLogin from 'react-google-login';
 import { Link } from 'react-router-dom';
+import Button from '../Button/Button';
+import { Avatar, Menu, MenuItem } from '@material-ui/core';
+import { Instagram, Facebook, Twitter } from '@material-ui/icons';
 
 const Hero = (props) => {
+  const { user, isAuthenticated, onLogout } = props;
+
   const handleGoogleResponse = async (resp) => {
     props.onLogin(resp.tokenId);
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -33,7 +49,7 @@ const Hero = (props) => {
             float: 'right'
           }}
         >
-          {!props.isAuthenticated ? (
+          {!isAuthenticated ? (
             <GoogleLogin
               clientId={process.env.REACT_APP_CLIENT_ID}
               onSuccess={handleGoogleResponse}
@@ -43,34 +59,32 @@ const Hero = (props) => {
             ></GoogleLogin>
           ) : (
             <div>
-              <NavDropdown
-                alignRight
-                title={
-                  <img
-                    src={props.user?.avatar}
-                    width='30'
-                    height='30'
-                    style={{ borderRadius: '99px' }}
-                    alt='avatar'
-                  ></img>
-                }
-                id='collasible-nav-dropdown'
+              <Avatar
+                aria-controls='menu-appbar'
+                aria-haspopup='true'
+                onClick={handleMenu}
+                src={user?.avatar}
+                style={{ cursor: 'pointer' }}
+              ></Avatar>
+              <Menu
+                id='menu-appbar'
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right'
+                }}
+                keepMounted
+                open={open}
+                onClose={handleClose}
               >
-                {props.user.role === 'admin' ? (
-                  <>
-                    <NavDropdown.Item as={Link} to='/admin'>
-                      Dashbord
-                    </NavDropdown.Item>
-
-                    <NavDropdown.Item>Profile</NavDropdown.Item>
-                    <NavDropdown.Item>Drafts</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                  </>
-                ) : null}
-                <NavDropdown.Item onClick={props.onLogout}>
-                  Logout
-                </NavDropdown.Item>
-              </NavDropdown>
+                <MenuItem onClick={handleClose}>Dashboard</MenuItem>
+                <MenuItem>Profile</MenuItem>
+                <MenuItem onClick={onLogout}>Logout</MenuItem>
+              </Menu>
             </div>
           )}
         </div>
@@ -78,18 +92,18 @@ const Hero = (props) => {
       <div className='logo-box' data-test='hero-logo-box'>
         <h1>Scribbles</h1>
         <h4>Incredeble things on my mind will be here</h4>
-        <button className='btn-custom'>About me</button>
+        <Button label='About Me' variant='secondary'></Button>
         &nbsp; &nbsp; &nbsp;
         <a href='/' className='fa-icon'>
-          <FontAwesomeIcon icon={faInstagram} />
+          <Instagram />
         </a>
         &nbsp; &nbsp; &nbsp;
         <a href='/' className='fa-icon'>
-          <FontAwesomeIcon icon={faFacebook} />
+          <Facebook icon={faFacebook} />
         </a>
         &nbsp; &nbsp; &nbsp;
         <a href='/' className='fa-icon'>
-          <FontAwesomeIcon icon={faTwitter} />
+          <Twitter icon={faTwitter} />
         </a>
         <br></br>
         <br></br>

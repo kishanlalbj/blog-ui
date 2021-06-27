@@ -21,21 +21,6 @@ describe('Article Component', () => {
     expect(articleComponent.length).toBe(1);
   });
 
-  it('should display article title', () => {
-    const articleTitle = findTestByAttr(wrapper, 'article-title');
-    expect(articleTitle.length).toBe(1);
-  });
-
-  it('should display article subtitle', () => {
-    const articleSubtitle = findTestByAttr(wrapper, 'article-subtitle');
-    expect(articleSubtitle.length).toBe(1);
-  });
-
-  it('should display article createdOn', () => {
-    const articleCreatedOn = findTestByAttr(wrapper, 'article-createdOn');
-    expect(articleCreatedOn.length).toBe(1);
-  });
-
   it('should display footer', () => {
     const articleCreatedOn = findTestByAttr(wrapper, 'article-footer');
     expect(articleCreatedOn.length).toBe(1);

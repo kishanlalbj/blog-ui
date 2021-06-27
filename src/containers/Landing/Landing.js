@@ -9,9 +9,11 @@ import ArticlesList from '../../components/ArticlesList/ArticleList';
 import Footer from '../../components/Footer/Footer';
 import Hero from '../../components/Hero/Hero';
 import { googleLogin, logoutUser } from '../../actions/auth/authActions';
+import { useHistory } from 'react-router';
 import './Landing.scss';
 
 const Landing = (props) => {
+  const history = useHistory();
   useEffect(() => {
     const getArticles = () => props.fetchArticles();
     getArticles();
@@ -31,6 +33,10 @@ const Landing = (props) => {
 
   const logoutHandler = () => {
     props.logout();
+  };
+
+  const goToArticle = (articleId) => {
+    history.push(`/article/${articleId}`);
   };
 
   return (
@@ -55,10 +61,14 @@ const Landing = (props) => {
                 />
               </center>
             ) : (
-              <ArticlesList articles={props.articles}></ArticlesList>
+              <ArticlesList
+                articles={props.articles}
+                goToArticle={goToArticle}
+              ></ArticlesList>
             )}
           </Col>
-
+        </Row>
+        <Row>
           <Col md={12} sm={12}>
             <div className='articles-navigation'>
               <div className='articles-navigation-previous'>

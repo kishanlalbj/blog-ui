@@ -1,9 +1,11 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import './ArticleCard.scss';
+import './ArticleCard.css';
 import { Link } from 'react-router-dom';
+import Button from '../Button/Button';
 import moment from 'moment';
+import { Chip } from '@material-ui/core';
 
 const ArticleCard = (props) => {
   const {
@@ -25,7 +27,7 @@ const ArticleCard = (props) => {
 
           <Card.Subtitle className='mb-2 text-muted'>
             <p>{articleSubtitle}</p>
-            <p className='chip'>{articleCategory}</p>
+            <Chip color='primary' label={articleCategory}></Chip>
           </Card.Subtitle>
 
           <Card.Text
@@ -34,17 +36,21 @@ const ArticleCard = (props) => {
               __html: articleContent?.substr(0, 140) + '...'
             }}
           ></Card.Text>
+
           <Card.Text className='mb-2 text-muted'>
             Posted on {moment(createdOn).format('LL')}
           </Card.Text>
           <br></br>
-          <Link
+
+          <Button
+            as={Link}
             className='btn-custom'
+            variant='secondary'
+            label='Read More'
             to={`/article/${articleId}`}
             data-test='readmore-btn'
-          >
-            Read More
-          </Link>
+            onClick={() => props.onReadMore(articleId)}
+          ></Button>
         </Card.Body>
       </Card>
     </div>
@@ -59,11 +65,4 @@ ArticleCard.propTypes = {
   articleCategory: PropTypes.string.isRequired
 };
 
-ArticleCard.defaultProps = {
-  articleTitle: '',
-  articleSubtitle: '',
-  articleCategory: '',
-  articleContent: '',
-  createdOn: ''
-};
 export default ArticleCard;

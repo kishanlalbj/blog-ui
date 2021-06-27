@@ -1,24 +1,49 @@
-import {
-  faUserAlt,
-  faPenFancy,
-  faDraftingCompass
-} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Table } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchArticles } from '../../actions/articles/articlesActions';
-import { logoutUser } from '../../actions/auth/authActions';
-import DashboardCard from '../../components/DashboardCard/DashboardCard';
+import { logoutUser, googleLogin } from '../../actions/auth/authActions';
 import Header from '../../components/Header/Header';
 import { API_BASE_URL } from '../../constants';
+import TrendChart from '../../components/Charts/TrendChart';
 import './Admin.scss';
-// import TrendChart from '../../components/Charts/TrendChart';
+import {
+  Typography,
+  Grid,
+  Toolbar,
+  Paper,
+  makeStyles
+} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex'
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    backgroundColor: 'whitesmoke',
+    height: '100vh'
+  },
+  paper: {
+    padding: '10px'
+  }
+}));
 
 const Admin = (props) => {
-  const { fetchArticles, articles, user, logout, next, previous } = props;
+  const {
+    fetchArticles,
+    articles,
+    user,
+    onLogout,
+    isAuthenticated,
+    next,
+    previous,
+    handleGoogleLogin
+  } = props;
+
+  const classes = useStyles();
 
   const [dashboard, setDashboardData] = useState({});
 
@@ -47,106 +72,34 @@ const Admin = (props) => {
   }, []);
 
   return (
-    <div data-test='admin-component'>
-      <Header user={user} onLogout={logout}></Header>
+    <div data-test='admin-component' className={classes.root}>
+      <Header
+        onLogout={onLogout}
+        isAuthenticated={isAuthenticated}
+        user={user}
+        handleGoogleResponse={handleGoogleLogin}
+        hasDrawer={true}
+      ></Header>
+      <main className={classes.content}>
+        <Toolbar></Toolbar>
 
-      <Container className='admin-container'>
-        <Row>
-          <Col md={{ span: 4, offset: 0 }}>
-            <DashboardCard
-              icon={faUserAlt}
-              title='Subscribers'
-              value={dashboard.users}
-              backgroundColor={'#362a24'}
-            ></DashboardCard>
-          </Col>
+        <Grid container spacing={3}>
+          {['Users', 'Articles', 'Drafts'].map((item) => (
+            <Grid key={item} item md={4}>
+              <Paper className={classes.paper}>
+                <Typography varaint='h6'>{item}</Typography>
+              </Paper>
+            </Grid>
+          ))}
 
-          <Col md={{ span: 4, offset: 0 }}>
-            <DashboardCard
-              icon={faPenFancy}
-              title='Articles'
-              value={dashboard.public}
-              backgroundColor={'#0e7680'}
-            ></DashboardCard>
-          </Col>
-
-          <Col md={{ span: 4, offset: 0 }}>
-            <DashboardCard
-              icon={faDraftingCompass}
-              title='Drafts'
-              value={dashboard.draft}
-              backgroundColor={'#a34a5a'}
-            ></DashboardCard>
-          </Col>
-        </Row>
-        <br></br>
-        <br></br>
-        <Row>
-          <Col md={12}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap'
-              }}
-            >
-              <h4>Articles </h4>
-
-              {/* <input
-                className='search-input'
-                placeholder='Search'
-                value={''}
-              ></input> */}
-              <Link to='/admin/article/new'>
-                <button className='btn-custom'>New</button>
-              </Link>
-            </div>
-            <br></br>
-            <Table hover bordered variant='dark' responsive>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Category</th>
-                  <th>Visits</th>
-                  <th>Likes</th>
-                  <th>Created On</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {articles.map((article) => (
-                  <tr>
-                    <td>{article.articleTitle}</td>
-                    <td>{article.articleCategory}</td>
-                    <td>{article.visits}</td>
-                    <td>{article.likes}</td>
-                    <td>{moment(article.createdOn).format('ll')}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-
-            <div className='navigationContainer'>
-              {previous ? (
-                <button className='btn-custom' onClick={handlePrevious}>
-                  {' '}
-                  Previous{' '}
-                </button>
-              ) : (
-                <span> </span>
-              )}
-              {next ? (
-                <button className='btn-custom' onClick={handleNext}>
-                  {' '}
-                  Next{' '}
-                </button>
-              ) : (
-                <span> </span>
-              )}
-            </div>
-          </Col>
-        </Row>
-      </Container>
+          <Grid item md={6}>
+            <Paper className={classes.paper}>
+              <h4>Users</h4>
+              <TrendChart></TrendChart>
+            </Paper>
+          </Grid>
+        </Grid>
+      </main>
     </div>
   );
 };
@@ -156,12 +109,14 @@ const mapStateToProps = (state) => ({
   next: state.articles.next,
   previous: state.articles.previous,
   loading: state.articles.loading,
+  isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchArticles: (page, limit = 5) => dispatch(fetchArticles(page, limit)),
-  logout: () => dispatch(logoutUser())
+  handleGoogleLogin: (tokenId) => dispatch(googleLogin(tokenId)),
+  onLogout: () => dispatch(logoutUser())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Admin);

@@ -1,35 +1,17 @@
 @import '../../variables.scss';
 
-.custom-shape-divider-top-1613247970 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  line-height: 0;
-}
-
-.custom-shape-divider-top-1613247970 svg {
-  position: relative;
-  display: block;
-  width: calc(130% + 1.3px);
-  height: 150px;
-}
-
-.custom-shape-divider-top-1613247970 .shape-fill {
-  fill: #ffffff;
-}
 .footer {
-  position: relative;
-  background: $heroImage;
+  background: #333;
   color: #ffffff;
-  min-height: 50vh;
+  height: 100%;
 }
 
 .footer-box {
-  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, 50%);
+  margin-top: 5%;
+  padding: 5%;
 }

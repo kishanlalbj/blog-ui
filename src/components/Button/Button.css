@@ -1,0 +1,43 @@
+.button-custom {
+  border: 1px solid transparent;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+}
+
+.button-transparent {
+  background: transparent;
+  color: black;
+}
+
+.button-transparent:hover {
+  border: none;
+}
+
+.button-primary {
+  background: #a11692;
+  color: white;
+}
+
+.button-secondary {
+  background: #f1d302;
+  color: black;
+}
+
+.button-warning {
+  background: tomato;
+  color: white;
+}
+
+.button-custom:hover {
+  background: #fff;
+  border: 1px solid #a11692;
+  text-decoration: none;
+  color: black;
+}
+
+.button-md {
+  min-width: 100px;
+  max-width: 100%;
+  padding: 10px;
+}

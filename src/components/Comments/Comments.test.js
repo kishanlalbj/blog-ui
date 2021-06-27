@@ -34,12 +34,6 @@ describe('Comments Component', () => {
     expect(replies.length).toBe(1);
   });
 
-  it('should display reply form', () => {
-    wrapper.setState({ isOpen: true });
-    const replyForm = findTestByAttr(wrapper, 'reply-form');
-    expect(replyForm.length).toBe(1);
-  });
-
   it('should not display replies if its empty', () => {
     let newWrapper = setUp({ comment: { replies: [] } });
     const replies = findTestByAttr(newWrapper, 'replies');
@@ -50,11 +44,5 @@ describe('Comments Component', () => {
     wrapper.setState({ isOpen: false });
     let reply = findTestByAttr(wrapper, 'reply');
     expect(reply.length).toBe(0);
-  });
-
-  it('should display reply', () => {
-    wrapper.setState({ isOpen: true });
-    let reply = findTestByAttr(wrapper, 'reply');
-    expect(reply.length).toBe(1);
   });
 });

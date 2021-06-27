@@ -1,8 +1,11 @@
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Component } from 'react';
 import { Col, Form, FormControl, Row, Modal } from 'react-bootstrap';
-import './Comments.scss';
+import { Avatar, IconButton } from '@material-ui/core';
+import { Delete } from '@material-ui/icons';
+import Button from '../Button/Button';
+
+import './Comments.css';
+import ReplyForm from '../ReplyForm/ReplyForm';
 class Comments extends Component {
   state = {
     isOpen: false,
@@ -54,15 +57,17 @@ class Comments extends Component {
         <div key={comment._id} className='comments-container'>
           <div>
             {isAdmin ? (
-              <FontAwesomeIcon
-                className='btn-icon'
-                style={{
-                  float: 'right'
-                }}
-                icon={faTrashAlt}
-                onClick={() => this.openConfirmDialog()}
-                color='red'
-              ></FontAwesomeIcon>
+              <>
+                <IconButton
+                  style={{
+                    float: 'right',
+                    color: 'crimson'
+                  }}
+                  onClick={() => this.openConfirmDialog()}
+                >
+                  <Delete></Delete>
+                </IconButton>
+              </>
             ) : (
               <span></span>
             )}
@@ -70,13 +75,13 @@ class Comments extends Component {
             <p>{comment.commentText}</p>
           </div>
           <span>
-            {comment.replies.length > 0 ? (
+            {comment?.replies?.length > 0 ? (
               <p
                 onClick={this.handleOpenReplies}
                 data-test='replies'
                 className='comments-footer'
               >
-                {comment.replies.length} Replies
+                {comment?.replies?.length} Replies
               </p>
             ) : (
               <p className='comments-footer' onClick={this.handleOpenReplies}>
@@ -89,45 +94,59 @@ class Comments extends Component {
             <div data-test='reply'>
               {comment.replies.map((reply) => (
                 <div key={reply._id} className='reply-container'>
-                  <div className='reply'>
-                    <span className='reply-name'>{reply.name}</span>-{' '}
-                    {reply.text}
+                  <div>
+                    <Avatar alt={reply.name} color='primary'>
+                      {reply.name.charAt(0)}
+                    </Avatar>
+                  </div>
+
+                  <div className='reply-info'>
+                    <h6>{reply.name}</h6>
+                    <p paragraph>{reply.text}</p>
                   </div>
                 </div>
               ))}
               <div className='reply'>
                 {isAuthenticated ? (
-                  <Form data-test='reply-form'>
-                    <Row>
-                      <Col md={{ span: 1 }}>
-                        <img
-                          src={user?.avatar}
-                          style={{ borderRadius: '99px' }}
-                          width='30'
-                          height='30'
-                          title={user?.name}
-                          alt='avatar'
-                        ></img>
-                      </Col>
-                      <Col md={8}>
-                        <FormControl
-                          placeholder='Reply'
-                          name='replyText'
-                          value={replyText}
-                          onChange={this.onChangeHandler}
-                        ></FormControl>
-                      </Col>
-                      <Col md={2}>
-                        <button
-                          className='btn-transparent'
-                          onClick={this.handleReplyToComment}
-                        >
-                          Reply
-                        </button>
-                      </Col>
-                    </Row>
-                  </Form>
-                ) : null}
+                  <>
+                    <ReplyForm
+                      user={user}
+                      replyText={replyText}
+                      onChangeHandler={this.onChangeHandler}
+                      handleReplyToComment={this.handleReplyToComment}
+                    ></ReplyForm>
+                  </>
+                ) : // <Form data-test='reply-form'>
+                //   <Row>
+                //     <Col md={{ span: 1 }}>
+                //       <img
+                //         src={user?.avatar}
+                //         style={{ borderRadius: '99px' }}
+                //         width='30'
+                //         height='30'
+                //         title={user?.name}
+                //         alt='avatar'
+                //       ></img>
+                //     </Col>
+                //     <Col md={8}>
+                //       <FormControl
+                //         placeholder='Reply'
+                //         name='replyText'
+                //         value={replyText}
+                //         onChange={this.onChangeHandler}
+                //       ></FormControl>
+                //     </Col>
+                //     <Col md={2}>
+                //       <Button
+                //         variant='secondary'
+                //         size='md'
+                //         label='Reply'
+                //         onClick={this.handleReplyToComment}
+                //       ></Button>
+                //     </Col>
+                //   </Row>
+                // </Form>
+                null}
               </div>
             </div>
           ) : null}
@@ -139,19 +158,17 @@ class Comments extends Component {
           </Modal.Header>
           <Modal.Body>Are you sure want to delete this comment ?</Modal.Body>
           <Modal.Footer>
-            <button
-              className='btn-custom'
+            <Button
+              variant='warning'
+              label='Yes'
               onClick={() => this.handleCommentDelete()}
-            >
-              Yes
-            </button>
-            <button
-              className='btn-transparent'
+            ></Button>
+            <Button
+              variant='transparent'
+              label='No'
               onClick={this.openConfirmDialog}
-              style={{ padding: '10px' }}
-            >
-              No
-            </button>
+              // style={{ padding: '10px' }}
+            ></Button>
           </Modal.Footer>
         </Modal>
       </div>
