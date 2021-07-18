@@ -16,12 +16,6 @@ const INITIAL_PROPS = {
 const setUp = (props = {}) => shallow(<ArticleList {...props}></ArticleList>);
 
 describe('Article List', () => {
-  it('should render without error', () => {
-    const wrapper = setUp(INITIAL_PROPS);
-    const articleList = findTestByAttr(wrapper, 'article-list').dive().dive();
-    expect(articleList.length).toBe(1);
-  });
-
   it('should say no articles found', () => {
     const wrapper = setUp({
       articles: []

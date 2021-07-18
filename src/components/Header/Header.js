@@ -37,7 +37,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex'
   },
   brand: {
-    flexGrow: 1
+    flexGrow: 1,
+    alignItems: 'center'
   },
   brandTitle: {
     color: 'inherit',
@@ -99,31 +100,52 @@ const Header = ({
   const drawer = () => (
     <>
       <div>
-        <div className={classes.toolbar} />
+        {/* <div className={classes.toolbar} /> */}
+        <div
+          className={classes.toolbar}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <img src='fav.png' alt='logo' width='10%'></img>
+
+          <Typography
+            component={Link}
+            to='/'
+            variant='h6'
+            className={classes.brandTitle}
+            noWrap
+          >
+            Scribbles
+          </Typography>
+        </div>
+
         <Divider />
         <List>
-          <ListItem button>
+          {/* <ListItem button component={Link} to='/admin/'>
             <ListItemIcon>
               <Dashboard></Dashboard>
             </ListItemIcon>
             <ListItemText primary={'Dashboard'} />
-          </ListItem>
+          </ListItem> */}
 
-          <ListItem button>
+          <ListItem button component={Link} to='/admin'>
             <ListItemIcon>
               <Description></Description>
             </ListItemIcon>
             <ListItemText primary={'Articles'} />
           </ListItem>
 
-          <ListItem button>
+          <ListItem button component={Link} to='/admin/drafts'>
             <ListItemIcon>
               <Drafts></Drafts>
             </ListItemIcon>
             <ListItemText primary={'Drafts'} />
           </ListItem>
 
-          <ListItem button>
+          <ListItem button component={Link} to='/admin/users'>
             <ListItemIcon>
               <Group></Group>
             </ListItemIcon>
@@ -169,15 +191,22 @@ const Header = ({
             </IconButton>
           ) : null}
           <div className={classes.brand}>
-            <Typography
-              component={Link}
-              to='/'
-              variant='h6'
-              className={classes.brandTitle}
-              noWrap
-            >
-              Scribbles
-            </Typography>
+            {hasDrawer ? (
+              <Typography className={classes.brandTitle}></Typography>
+            ) : (
+              <>
+                <img src='fav.png' alt='logo' width={30}></img>
+                <Typography
+                  component={Link}
+                  to='/'
+                  variant='h6'
+                  className={classes.brandTitle}
+                  noWrap
+                >
+                  Scribbles
+                </Typography>
+              </>
+            )}
           </div>
 
           {!isAuthenticated ? (

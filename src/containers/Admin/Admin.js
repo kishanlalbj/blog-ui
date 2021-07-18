@@ -1,20 +1,20 @@
+import { makeStyles, Toolbar } from '@material-ui/core';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { fetchArticles } from '../../actions/articles/articlesActions';
-import { logoutUser, googleLogin } from '../../actions/auth/authActions';
+import { googleLogin, logoutUser } from '../../actions/auth/authActions';
 import Header from '../../components/Header/Header';
+import ProtectedRoute from '../../components/ProtectedRoute/ProtectedRoute';
 import { API_BASE_URL } from '../../constants';
-import TrendChart from '../../components/Charts/TrendChart';
 import './Admin.scss';
-import {
-  Typography,
-  Grid,
-  Toolbar,
-  Paper,
-  makeStyles
-} from '@material-ui/core';
+import Articles from './Articles/Articles';
+import Dashboard from './Dashboard/Dashboard';
+import ArticleBuilder from '../ArticleBuilder/ArticleBuilder';
+import Users from './Users/Users';
+import Drafts from './Drafts/Drafts';
+import Edit from './Edit/Edit';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
     backgroundColor: 'whitesmoke',
-    height: '100vh'
+    height: '100vh',
+    overflowY: 'auto'
   },
   paper: {
     padding: '10px'
@@ -34,12 +35,9 @@ const useStyles = makeStyles((theme) => ({
 const Admin = (props) => {
   const {
     fetchArticles,
-    articles,
     user,
     onLogout,
     isAuthenticated,
-    next,
-    previous,
     handleGoogleLogin
   } = props;
 
@@ -55,20 +53,12 @@ const Admin = (props) => {
     return resp.data;
   };
 
-  const handlePrevious = () => {
-    fetchArticles(props.previous.page);
-  };
-
-  const handleNext = () => {
-    fetchArticles(props.next.page);
-  };
-
   useEffect(() => {
     getDashboardData().then((data) => {
       console.log(data);
       setDashboardData({ ...data });
     });
-    fetchArticles(1, 5);
+    fetchArticles(1, 10);
   }, []);
 
   return (
@@ -82,23 +72,34 @@ const Admin = (props) => {
       ></Header>
       <main className={classes.content}>
         <Toolbar></Toolbar>
-
-        <Grid container spacing={3}>
-          {['Users', 'Articles', 'Drafts'].map((item) => (
-            <Grid key={item} item md={4}>
-              <Paper className={classes.paper}>
-                <Typography varaint='h6'>{item}</Typography>
-              </Paper>
-            </Grid>
-          ))}
-
-          <Grid item md={6}>
-            <Paper className={classes.paper}>
-              <h4>Users</h4>
-              <TrendChart></TrendChart>
-            </Paper>
-          </Grid>
-        </Grid>
+        <Switch>
+          {/* <ProtectedRoute
+            exact
+            path={`/admin`}
+            component={Dashboard}
+          ></ProtectedRoute> */}
+          <ProtectedRoute
+            exact
+            path={`/admin`}
+            component={Articles}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            exact
+            path={`/admin/articles/edit/:id`}
+            component={Edit}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            exact
+            path={`/admin/drafts`}
+            component={Drafts}
+          ></ProtectedRoute>
+          <ProtectedRoute
+            exact
+            path={`/admin/articles/new`}
+            component={ArticleBuilder}
+          ></ProtectedRoute>
+          <Route exact path={`/admin/users`} component={Users}></Route>
+        </Switch>
       </main>
     </div>
   );

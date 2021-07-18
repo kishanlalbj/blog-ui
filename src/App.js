@@ -28,7 +28,7 @@ function App(props) {
       <Switch>
         <Route exact path='/' component={Landing}></Route>
         <Route exact path='/article/:articleId' component={Article}></Route>
-        <ProtectedRoute exact path='/admin' component={Admin}></ProtectedRoute>
+        <ProtectedRoute path='/admin' component={Admin}></ProtectedRoute>
         <ProtectedRoute
           exact
           path='/admin/article/new'

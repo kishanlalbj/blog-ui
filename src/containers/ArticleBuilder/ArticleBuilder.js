@@ -1,28 +1,32 @@
-import React, { useState } from 'react';
 import {
+  Breadcrumbs,
+  Button,
   Container,
-  Form,
   FormControl,
-  FormLabel,
-  Col,
-  Button
-} from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { logoutUser } from '../../actions/auth/authActions';
-import Header from '../../components/Header/Header';
-import ReactQuill, { Quill } from 'react-quill';
+  Grid,
+  Link,
+  Paper,
+  Snackbar,
+  TextField,
+  Typography
+} from '@material-ui/core';
+import { Publish, Remove, Save } from '@material-ui/icons';
+import axios from 'axios';
 import * as Emoji from 'quill-emoji';
-
-import 'react-quill/dist/quill.snow.css';
 import 'quill-emoji/dist/quill-emoji.css';
+import { useEffect, useState } from 'react';
+import ReactQuill, { Quill } from 'react-quill';
+import { connect } from 'react-redux';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { logoutUser } from '../../actions/auth/authActions';
+import { API_BASE_URL } from '../../constants';
 import './ArticleBuilder.scss';
+import 'react-quill/dist/quill.snow.css';
+import { useParams } from 'react-router-dom';
 
 Quill.register('modules/emoji', Emoji);
 const Font = Quill.import('formats/font');
 Font.whitelist = ['Monospace'];
-
-// const Size = Quill.import('attributors/style/size');
-// Size.whitelist = ['14px', '16px', '18px'];
 
 Quill.register(Font, true);
 // Quill.register(Size, true);
@@ -63,95 +67,240 @@ const formats = [
 ];
 
 const ArticleBuilder = (props) => {
-  const { user, isAuthenticated, logout } = props;
-  const [newarticle, setNewArticle] = useState({
-    articleTitle: '',
-    articleSubTitle: '',
-    category: '',
-    articleContent: 'Abaseas'
-  });
+  console.log(props);
+  const { id } = useParams();
 
-  const handleEditorChange = (value) => {
-    console.log(value);
-    setNewArticle({
-      ...newarticle,
-      articleContent: value
-    });
+  const fetchArticle = async () => {
+    let resp = await axios.get(`${API_BASE_URL}/articles/${id}`);
+    let {
+      articleTitle,
+      articleSubtitle,
+      articleContent,
+      articleCategory
+    } = resp.data;
+    setArticleTitle(articleTitle);
+    setArticleSubtitle(articleSubtitle);
+    setArticleCategory(articleCategory);
+    setArticleContent(articleContent);
+  };
+
+  useEffect(() => {
+    if (props.mode === 'edit') fetchArticle(id);
+  }, []);
+
+  const [articleTitle, setArticleTitle] = useState('');
+  const [articleSubtitle, setArticleSubtitle] = useState('');
+  const [articleCategory, setArticleCategory] = useState('');
+  const [articleContent, setArticleContent] = useState('');
+  const [invalidFields, setInvalidFields] = useState(false);
+  const [alert, setAlert] = useState({
+    state: false,
+    error: false,
+    message: ''
+  });
+  const history = useHistory();
+
+  const handleAlertClose = () => {
+    setAlert({ state: false, error: false, message: '' });
+  };
+
+  const editArticle = async (headers, article) => {
+    await axios.post(
+      `${API_BASE_URL}/articles/update`,
+      { id, ...article },
+      headers
+    );
+  };
+
+  const createNewArticle = async (headers, article) => {
+    await axios.post(`${API_BASE_URL}/articles/add`, article, headers);
+  };
+
+  const handleAction = async (isDraft) => {
+    if (articleTitle && articleSubtitle && articleCategory && articleContent) {
+      const article = {
+        articleTitle,
+        articleSubtitle,
+        articleCategory,
+        articleContent,
+        isPrivate: isDraft
+      };
+
+      try {
+        let headers = {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+          }
+        };
+
+        if (props.mode === 'edit') {
+          editArticle(headers, article);
+          history.push('/admin/drafts');
+        } else {
+          createNewArticle(headers, article);
+          history.push('/admin');
+        }
+
+        setAlert({
+          state: true,
+          error: false,
+          message: 'Article Saved successfully'
+        });
+      } catch (error) {
+        setAlert({
+          state: true,
+          error: true,
+          message: 'Unable to save article'
+        });
+      }
+    } else {
+      setInvalidFields(true);
+    }
   };
 
   return (
     <div>
-      <Header
-        onLogout={logout}
-        isAuthenticated={isAuthenticated}
-        user={user}
-      ></Header>
-
       <Container>
-        <h2>Build Article</h2>
-
-        <Form>
-          <Form.Row>
-            <Col>
-              <FormLabel>Article Title</FormLabel>
-              <FormControl placeholder='Article Title'></FormControl>
-            </Col>
-
-            <Col>
-              <FormLabel>Article Subtitle</FormLabel>
-              <FormControl placeholder='Article Title'></FormControl>
-            </Col>
-          </Form.Row>
-          <br></br>
-          <Form.Row>
-            <Col md={6}>
-              <FormLabel>Category</FormLabel>
-              <FormControl as='select'>
-                <option>Choose</option>
-              </FormControl>
-            </Col>
-            <Col>
-              <br></br>
-              <button
-                className='btn-custom'
-                onClick={(e) => e.preventDefault()}
+        {props.mode !== 'edit' ? (
+          <Breadcrumbs>
+            <Link button component={RouterLink} color='inherit' to='/admin/'>
+              Articles
+            </Link>
+            <Link
+              button
+              component={RouterLink}
+              color='inherit'
+              to='/admin/articles/new'
+            >
+              New
+            </Link>
+          </Breadcrumbs>
+        ) : (
+          <Breadcrumbs>
+            <Link button component={RouterLink} color='inherit' to='/admin/'>
+              Drafts
+            </Link>
+            <Link
+              button
+              component={RouterLink}
+              color='inherit'
+              to={`/admin/drafts/edit/${id}`}
+            >
+              Edit
+            </Link>
+          </Breadcrumbs>
+        )}
+        <br></br>
+        <Paper style={{ padding: '20px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Typography variant='h5'>
+              {props.mode === 'edit' ? 'Edit ' : 'New '} Article
+            </Typography>
+            <div>
+              <Button
+                color='primary'
+                variant='contained'
+                onClick={() => handleAction(false)}
               >
-                New Category
-              </button>
-            </Col>
-          </Form.Row>
+                <Publish /> &nbsp; Publish
+              </Button>
+              &nbsp; &nbsp;
+              <Button
+                variant='outlined'
+                color='secondary'
+                onClick={() => handleAction(true)}
+              >
+                <Save></Save> &nbsp; Save
+              </Button>
+              &nbsp; &nbsp;
+              <RouterLink to='/admin'>
+                <Button color='warning' variant='outlined'>
+                  <Remove /> &nbsp; Discard
+                </Button>
+              </RouterLink>
+            </div>
+          </div>
           <br></br>
-          <Form.Row>
-            <Col>
-              <FormLabel>Content</FormLabel>
+          <form>
+            <Grid container spacing={3}>
+              <Grid item md={12}>
+                <FormControl fullWidth>
+                  <TextField
+                    error={invalidFields}
+                    required
+                    placeholder='Title'
+                    label='Title'
+                    variant='outlined'
+                    size='small'
+                    onChange={(e) => setArticleTitle(e.target.value)}
+                    value={articleTitle}
+                  ></TextField>
+                </FormControl>
+              </Grid>
 
-              <ReactQuill
-                value={newarticle.articleContent}
-                onChange={(e) => handleEditorChange(e)}
-                theme='snow'
-                style={{ height: '500px' }}
-                modules={{
-                  ...modules,
-                  'emoji-toolbar': true,
-                  'emoji-textarea': true,
-                  'emoji-shortname': true
-                }}
-                formats={formats}
-                placeholder='Your Content Here'
-              ></ReactQuill>
-            </Col>
-          </Form.Row>
-          <br></br>
-          <br></br>
-          <Form.Row>
-            <Col>
-              <Button>Publish</Button>
-              <Button>Publish</Button>
-              <Button>Publish</Button>
-            </Col>
-          </Form.Row>
-        </Form>
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <TextField
+                    error={invalidFields}
+                    required
+                    placeholder='SubTitle'
+                    label='SubTitle'
+                    variant='outlined'
+                    size='small'
+                    onChange={(e) => setArticleSubtitle(e.target.value)}
+                    value={articleSubtitle}
+                  ></TextField>
+                </FormControl>
+              </Grid>
+
+              <Grid item md={12}>
+                <FormControl fullWidth>
+                  <TextField
+                    required
+                    error={invalidFields}
+                    placeholder='Category'
+                    label='Category'
+                    variant='outlined'
+                    size='small'
+                    onChange={(e) => setArticleCategory(e.target.value)}
+                    value={articleCategory}
+                  ></TextField>
+                </FormControl>
+              </Grid>
+
+              <Grid item md={12}>
+                <ReactQuill
+                  value={articleContent}
+                  onChange={(val) => setArticleContent(val)}
+                  theme='snow'
+                  modules={{
+                    ...modules,
+                    'emoji-toolbar': true,
+                    'emoji-textarea': true,
+                    'emoji-shortname': true
+                  }}
+                  formats={formats}
+                  placeholder='Your Content Here'
+                ></ReactQuill>
+              </Grid>
+            </Grid>
+          </form>
+        </Paper>
       </Container>
+
+      <Snackbar
+        open={alert.state}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+        autoHideDuration={6000}
+        onClose={handleAlertClose}
+        message={alert.message}
+      ></Snackbar>
     </div>
   );
 };
@@ -165,4 +314,5 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   logout: () => dispatch(logoutUser())
 });
+
 export default connect(mapStateToProps, mapDispatchToProps)(ArticleBuilder);
